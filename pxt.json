@@ -1,5 +1,5 @@
 {
-    "name": "Tanks",
+    "name": "Tiny-Tanks",
     "description": "",
     "dependencies": {
         "device": "*",
