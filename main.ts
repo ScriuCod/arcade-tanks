@@ -34,7 +34,7 @@ function setOrientation (newOrientation: string) {
             . f d f 4 4 4 4 4 4 4 4 f f f . 
             . f f f 4 f 4 f f 4 f 4 f d f . 
             . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
+            . f f f 4 4 2 2 2 2 4 4 f d f . 
             . f d f 4 4 2 e e 2 4 4 f f f . 
             . f f f 4 4 2 e e 2 4 4 f d f . 
             . f d f 4 4 4 e e 4 4 4 f f f . 
@@ -49,40 +49,40 @@ function setOrientation (newOrientation: string) {
         sprites.setDataString(tankCharacter, "orientation", newOrientation)
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
-            . f f f . . . . . . . . f f f . 
-            . f f f f f f f f f f f f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 f 4 f f 4 f 4 f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f f f f e e f f f f f f . 
-            . f f f . . . e e . . . f f f . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f d f d f d f d f d f f . . . 
+            . f f f f f f f f f f f f . . . 
+            . . f 4 4 4 4 4 4 4 4 f . . . . 
+            . . f 4 f 4 4 4 4 4 4 f . . . . 
+            . . f 4 4 4 2 2 2 4 4 f . . . . 
+            . . f 4 f 4 2 e e e e e e e e . 
+            . . f 4 f 4 2 e e e e e e e e . 
+            . . f 4 4 4 2 2 2 4 4 f . . . . 
+            . . f 4 f 4 4 4 4 4 4 f . . . . 
+            . . f 4 4 4 4 4 4 4 4 f . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f f d f d f d f d f d f . . . 
+            . f f f f f f f f f f f f . . . 
             . . . . . . . . . . . . . . . . 
             `)
     } else if (newOrientation == "left") {
         sprites.setDataString(tankCharacter, "orientation", newOrientation)
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
-            . f f f . . . . . . . . f f f . 
-            . f f f f f f f f f f f f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 f 4 f f 4 f 4 f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f f f f e e f f f f f f . 
-            . f f f . . . e e . . . f f f . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f d f d f d f d f d f f . 
+            . . . f f f f f f f f f f f f . 
+            . . . . f 4 4 4 4 4 4 4 4 f . . 
+            . . . . f 4 4 4 4 4 4 f 4 f . . 
+            . . . . f 4 4 2 2 2 4 4 4 f . . 
+            . e e e e e e e e 2 4 f 4 f . . 
+            . e e e e e e e e 2 4 f 4 f . . 
+            . . . . f 4 4 2 2 2 4 4 4 f . . 
+            . . . . f 4 4 4 4 4 4 f 4 f . . 
+            . . . . f 4 4 4 4 4 4 4 4 f . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f f d f d f d f d f d f . 
+            . . . f f f f f f f f f f f f . 
             . . . . . . . . . . . . . . . . 
             `)
     }
