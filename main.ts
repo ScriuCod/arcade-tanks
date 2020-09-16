@@ -88,11 +88,29 @@ function setOrientation (newOrientation: string) {
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile = sprites.createProjectileFromSprite(img`
-        f 2 
+    projectile = sprites.create(img`
         2 f 
-        `, tankCharacter, 0, -50)
-    projectile.y += -5
+        f 2 
+        `, SpriteKind.Projectile)
+    if (sprites.readDataString(tankCharacter, "Orientation") == "up") {
+        projectile.y += -5
+        projectile.setVelocity(0, -50)
+    } else if (sprites.readDataString(tankCharacter, "Orientation") == "down") {
+        projectile.y += 5
+        projectile.setVelocity(0, 50)
+    } else if (sprites.readDataString(tankCharacter, "Orientation") == "right") {
+        projectile.x += 5
+        projectile.setVelocity(50, 0)
+    } else if (sprites.readDataString(tankCharacter, "Orientation") == "left") {
+        projectile.x += -5
+        mySprite.setVelocity(-50, 0)
+    }
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    setOrientation("left")
+})
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    setOrientation("right")
 })
 function randomWalls () {
     bricksDifficulty = 30
@@ -135,8 +153,8 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
     otherSprite.destroy()
     sprite.destroy()
 })
-let mySprite: Sprite = null
 let bricksDifficulty = 0
+let mySprite: Sprite = null
 let projectile: Sprite = null
 let tankCharacter: Sprite = null
 scene.setBackgroundColor(7)
