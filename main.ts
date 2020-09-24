@@ -89,6 +89,7 @@ function setOrientation (newOrientation: string) {
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (!(sprites.readDataNumber(tankCharacter, "activeMunition") == sprites.readDataNumber(tankCharacter, "maxMunition"))) {
+        music.pewPew.play()
         projectile = sprites.create(img`
             2 f 
             f 2 
@@ -147,32 +148,21 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("right")
 })
 function randomWalls () {
+    list = tiles.getTilesByType(sprites.castle.tilePath5)
     for (let index = 0; index < bricksDifficulty; index++) {
-        mySprite = sprites.create(img`
-            e e e e e e e e e e e e e e e e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e e e e e e e e e e e e e e e e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e e e e e e e e e e e e e e e e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e 4 4 4 4 4 4 4 4 4 4 4 4 4 4 e 
-            e e e e e e e e e e e e e e e e 
-            `, SpriteKind.Wall)
-        tiles.placeOnRandomTile(mySprite, sprites.castle.tilePath5)
+        randomLocation = list[randint(0, list.length - 1)]
+        tiles.setTileAt(randomLocation, myTiles.tile1)
+        tiles.setWallAt(randomLocation, true)
     }
 }
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("down")
 })
 scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
+    if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
+        tiles.setWallAt(location, false)
+        tiles.setTileAt(location, sprites.castle.tilePath5)
+    }
     sprite.destroy()
 })
 function createPlayer () {
@@ -211,7 +201,8 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     sprites.changeDataNumberBy(tankCharacter, "activeMunition", -1)
 })
-let mySprite: Sprite = null
+let randomLocation: tiles.Location = null
+let list: tiles.Location[] = []
 let bricksDifficulty = 0
 let projectile: Sprite = null
 let tankCharacter: Sprite = null
