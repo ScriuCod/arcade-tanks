@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const Wall = SpriteKind.create()
+    export const Present = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("up")
@@ -88,7 +89,7 @@ function setOrientation (newOrientation: string) {
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (!(sprites.readDataNumber(tankCharacter, "activeMunition") == sprites.readDataNumber(tankCharacter, "maxMunition"))) {
+    if (sprites.readDataNumber(tankCharacter, "activeMunition") < sprites.readDataNumber(tankCharacter, "maxMunition")) {
         music.pewPew.play()
         projectile = sprites.create(img`
             2 f 
@@ -127,16 +128,16 @@ function imitLevel (level: number) {
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3], TileScale.Sixteen))
         randomWalls()
     } else if (level == 1) {
-        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000004010101010101010104010201020101020102010101010103030101010101010101030301010101010201020101020102010401010101010101010402020202020202020202`, img`
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000003010101010101010103010201020101020102010101010104040101010101010101040401010101010201020101020102010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
             . . . . . . . . . . 
             . 2 . 2 . . 2 . 2 . 
-            . . . . . . . . . . 
-            . . . . . . . . . . 
+            . . . . 2 2 . . . . 
+            . . . . 2 2 . . . . 
             . 2 . 2 . . 2 . 2 . 
             . . . . . . . . . . 
             2 2 2 2 2 2 2 2 2 2 
-            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,sprites.dungeon.floorLight1,myTiles.tile3], TileScale.Sixteen))
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
         randomWalls()
     }
     tiles.placeOnRandomTile(tankCharacter, myTiles.tile3)
@@ -155,6 +156,11 @@ function randomWalls () {
         tiles.setWallAt(randomLocation, true)
     }
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    info.changeScoreBy(75)
+    music.baDing.play()
+})
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("down")
 })
@@ -162,6 +168,38 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
+        info.changeScoreBy(5)
+    } else if (tiles.tileAtLocationEquals(location, myTiles.tile4)) {
+        tiles.setWallAt(location, false)
+        tiles.setTileAt(location, sprites.castle.tilePath5)
+        info.changeScoreBy(25)
+        randomPresent = randint(1, 3)
+        if (randomPresent == 1) {
+            tiles.setTileAt(location, sprites.dungeon.floorLight0)
+            tiles.setWallAt(location, true)
+        } else if (randomPresent == 2) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d f f f f d f f f f d b 
+                1 d d d d d d d f d f d d d d b 
+                1 d d 5 d d d f d d d f f d d b 
+                1 d 5 5 5 d f d d d d d d f d b 
+                1 d d 5 d d f d d d f d d f d b 
+                1 d d d d d f d d d d f f d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+            tiles.placeOnTile(sprPresent, location)
+        } else if (randomPresent == 3) {
+        	
+        }
     }
     sprite.destroy()
 })
@@ -184,8 +222,8 @@ function createPlayer () {
         . f f f . . . . . . . . f f f . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Player)
+    sprites.setDataString(tankCharacter, "orientation", "up")
     sprites.setDataNumber(tankCharacter, "speed", 45)
-    sprites.setDataString(tankCharacter, "orientatation", "up")
     sprites.setDataNumber(tankCharacter, "maxMunition", 3)
     sprites.setDataNumber(tankCharacter, "activeMunition", 0)
     tankCharacter.setFlag(SpriteFlag.StayInScreen, true)
@@ -201,6 +239,8 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     sprites.changeDataNumberBy(tankCharacter, "activeMunition", -1)
 })
+let sprPresent: Sprite = null
+let randomPresent = 0
 let randomLocation: tiles.Location = null
 let list: tiles.Location[] = []
 let bricksDifficulty = 0
