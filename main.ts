@@ -140,11 +140,38 @@ function imitLevel (level: number) {
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
         randomWalls()
     }
-    tiles.placeOnRandomTile(tankCharacter, myTiles.tile3)
+    placeTank(tankCharacter)
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("left")
 })
+function placeTank (tank: Sprite) {
+    startLocations = tiles.getTilesByType(myTiles.tile3)
+    randomStartLocation = startLocations[randint(0, startLocations.length - 1)]
+    tiles.placeOnTile(tank, randomStartLocation)
+    tiles.setTileAt(randomStartLocation, myTiles.tile5)
+}
+function createEnemy () {
+    enemyTank = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . f f f . . . e e . . . f f f . 
+        . f f f f f f e e f f f f d f . 
+        . f d f 2 2 2 e e 2 2 2 f f f . 
+        . f f f 2 2 2 e e 2 2 2 f d f . 
+        . f d f 2 2 5 e e 5 2 2 f f f . 
+        . f f f 2 2 5 e e 5 2 2 f d f . 
+        . f d f 2 2 5 5 5 5 2 2 f f f . 
+        . f f f 2 2 2 2 2 2 2 2 f d f . 
+        . f d f 2 f 2 f f 2 f 2 f f f . 
+        . f f f 2 2 2 2 2 2 2 2 f d f . 
+        . f d f f f f f f f f f f f f . 
+        . f f f . . . . . . . . f f f . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    placeTank(enemyTank)
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     setOrientation("right")
 })
@@ -243,6 +270,9 @@ let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
 let list: tiles.Location[] = []
+let enemyTank: Sprite = null
+let randomStartLocation: tiles.Location = null
+let startLocations: tiles.Location[] = []
 let bricksDifficulty = 0
 let projectile: Sprite = null
 let tankCharacter: Sprite = null
@@ -251,3 +281,4 @@ info.setScore(0)
 projectileSpeed = 80
 createPlayer()
 imitLevel(1)
+createEnemy()
