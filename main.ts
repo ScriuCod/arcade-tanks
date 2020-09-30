@@ -69,7 +69,7 @@ function randomWalls () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
-    info.changeScoreBy(75)
+    info.player1.changeScoreBy(75)
     music.baDing.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
@@ -100,11 +100,11 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        info.changeScoreBy(5)
+        info.player1.changeScoreBy(5)
     } else if (tiles.tileAtLocationEquals(location, myTiles.tile4)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        info.changeScoreBy(25)
+        info.player1.changeScoreBy(25)
         randomPresent = randint(1, 3)
         if (randomPresent == 1) {
             tiles.setTileAt(location, sprites.dungeon.floorLight0)
@@ -182,13 +182,13 @@ let startLocations: tiles.Location[] = []
 let tankCharacter: Sprite = null
 let bricksDifficulty = 0
 let projectileSpeed = 0
-info.setScore(0)
+info.player1.setScore(0)
 projectileSpeed = 80
 createPlayer()
 imitLevel(1)
 createEnemy()
 game.onUpdate(function () {
-    if (controller.up.isPressed()) {
+    if (controller.player1.isPressed(ControllerButton.Up)) {
         sprites.setDataString(tankCharacter, "orientation", "up")
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -208,7 +208,7 @@ game.onUpdate(function () {
             . f f f . . . . . . . . f f f . 
             . . . . . . . . . . . . . . . . 
             `)
-    } else if (controller.down.isPressed()) {
+    } else if (controller.player1.isPressed(ControllerButton.Down)) {
         sprites.setDataString(tankCharacter, "orientation", "down")
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -228,7 +228,7 @@ game.onUpdate(function () {
             . . . . . . . e e . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `)
-    } else if (controller.left.isPressed()) {
+    } else if (controller.player1.isPressed(ControllerButton.Left)) {
         sprites.setDataString(tankCharacter, "orientation", "left")
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -248,7 +248,7 @@ game.onUpdate(function () {
             . . . f f f f f f f f f f f f . 
             . . . . . . . . . . . . . . . . 
             `)
-    } else if (controller.right.isPressed()) {
+    } else if (controller.player1.isPressed(ControllerButton.Right)) {
         sprites.setDataString(tankCharacter, "orientation", "right")
         tankCharacter.setImage(img`
             . . . . . . . . . . . . . . . . 
