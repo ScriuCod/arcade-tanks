@@ -2,116 +2,6 @@ namespace SpriteKind {
     export const Wall = SpriteKind.create()
     export const Present = SpriteKind.create()
 }
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    setOrientation("up")
-})
-function setOrientation (newOrientation: string) {
-    if (newOrientation == "up") {
-        sprites.setDataString(tankCharacter, "orientation", newOrientation)
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . f f f . . . e e . . . f f f . 
-            . f f f f f f e e f f f f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 2 2 2 2 4 4 f f f . 
-            . f f f 4 4 4 4 4 4 4 4 f d f . 
-            . f d f 4 f 4 f f 4 f 4 f f f . 
-            . f f f 4 4 4 4 4 4 4 4 f d f . 
-            . f d f f f f f f f f f f f f . 
-            . f f f . . . . . . . . f f f . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    } else if (newOrientation == "down") {
-        sprites.setDataString(tankCharacter, "orientation", newOrientation)
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . f f f . . . . . . . . f f f . 
-            . f f f f f f f f f f f f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 f 4 f f 4 f 4 f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 4 2 2 2 2 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f f f f e e f f f f f f . 
-            . f f f . . . e e . . . f f f . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    } else if (newOrientation == "right") {
-        sprites.setDataString(tankCharacter, "orientation", newOrientation)
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . f f f f f f f f f f f f . . . 
-            . f d f d f d f d f d f f . . . 
-            . f f f f f f f f f f f f . . . 
-            . . f 4 4 4 4 4 4 4 4 f . . . . 
-            . . f 4 f 4 4 4 4 4 4 f . . . . 
-            . . f 4 4 4 2 2 2 4 4 f . . . . 
-            . . f 4 f 4 2 e e e e e e e e . 
-            . . f 4 f 4 2 e e e e e e e e . 
-            . . f 4 4 4 2 2 2 4 4 f . . . . 
-            . . f 4 f 4 4 4 4 4 4 f . . . . 
-            . . f 4 4 4 4 4 4 4 4 f . . . . 
-            . f f f f f f f f f f f f . . . 
-            . f f d f d f d f d f d f . . . 
-            . f f f f f f f f f f f f . . . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    } else if (newOrientation == "left") {
-        sprites.setDataString(tankCharacter, "orientation", newOrientation)
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . f f f f f f f f f f f f . 
-            . . . f d f d f d f d f d f f . 
-            . . . f f f f f f f f f f f f . 
-            . . . . f 4 4 4 4 4 4 4 4 f . . 
-            . . . . f 4 4 4 4 4 4 f 4 f . . 
-            . . . . f 4 4 2 2 2 4 4 4 f . . 
-            . e e e e e e e e 2 4 f 4 f . . 
-            . e e e e e e e e 2 4 f 4 f . . 
-            . . . . f 4 4 2 2 2 4 4 4 f . . 
-            . . . . f 4 4 4 4 4 4 f 4 f . . 
-            . . . . f 4 4 4 4 4 4 4 4 f . . 
-            . . . f f f f f f f f f f f f . 
-            . . . f f d f d f d f d f d f . 
-            . . . f f f f f f f f f f f f . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    }
-}
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprites.readDataNumber(tankCharacter, "activeMunition") < sprites.readDataNumber(tankCharacter, "maxMunition")) {
-        music.pewPew.play()
-        projectile = sprites.create(img`
-            2 f 
-            f 2 
-            `, SpriteKind.Projectile)
-        projectile.setPosition(tankCharacter.x, tankCharacter.y)
-        console.log(sprites.readDataString(tankCharacter, "orientation"))
-        if (sprites.readDataString(tankCharacter, "orientation") == "up") {
-            projectile.setPosition(tankCharacter.x, tankCharacter.y - 7)
-            projectile.setVelocity(0, projectileSpeed * -1)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "down") {
-            projectile.y += 5
-            projectile.setVelocity(0, projectileSpeed)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "right") {
-            projectile.x += 5
-            projectile.setVelocity(projectileSpeed, 0)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "left") {
-            projectile.x += -5
-            projectile.setVelocity(projectileSpeed * -1, 0)
-        }
-    }
-})
 function imitLevel (level: number) {
     bricksDifficulty = 30
     scene.setBackgroundColor(7)
@@ -137,14 +27,11 @@ function imitLevel (level: number) {
             . 2 . 2 . . 2 . 2 . 
             . . . . . . . . . . 
             2 2 2 2 2 2 2 2 2 2 
-            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4,myTiles.tile1], TileScale.Sixteen))
         randomWalls()
     }
     placeTank(tankCharacter)
 }
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    setOrientation("left")
-})
 function placeTank (tank: Sprite) {
     startLocations = tiles.getTilesByType(myTiles.tile3)
     randomStartLocation = startLocations[randint(0, startLocations.length - 1)]
@@ -172,9 +59,6 @@ function createEnemy () {
         `, SpriteKind.Enemy)
     placeTank(enemyTank)
 }
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    setOrientation("right")
-})
 function randomWalls () {
     list = tiles.getTilesByType(sprites.castle.tilePath5)
     for (let index = 0; index < bricksDifficulty; index++) {
@@ -188,8 +72,29 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, other
     info.changeScoreBy(75)
     music.baDing.play()
 })
-controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    setOrientation("down")
+controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
+    if (sprites.readDataNumber(tankCharacter, "activeMunition") < sprites.readDataNumber(tankCharacter, "maxMunition")) {
+        music.pewPew.play()
+        projectile = sprites.create(img`
+            2 f 
+            f 2 
+            `, SpriteKind.Projectile)
+        projectile.setPosition(tankCharacter.x, tankCharacter.y)
+        console.log(sprites.readDataString(tankCharacter, "orientation"))
+        if (sprites.readDataString(tankCharacter, "orientation") == "up") {
+            projectile.setPosition(tankCharacter.x, tankCharacter.y - 7)
+            projectile.setVelocity(0, projectileSpeed * -1)
+        } else if (sprites.readDataString(tankCharacter, "orientation") == "down") {
+            projectile.y += 5
+            projectile.setVelocity(0, projectileSpeed)
+        } else if (sprites.readDataString(tankCharacter, "orientation") == "right") {
+            projectile.x += 5
+            projectile.setVelocity(projectileSpeed, 0)
+        } else if (sprites.readDataString(tankCharacter, "orientation") == "left") {
+            projectile.x += -5
+            projectile.setVelocity(projectileSpeed * -1, 0)
+        }
+    }
 })
 scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
@@ -268,17 +173,100 @@ sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
 })
 let sprPresent: Sprite = null
 let randomPresent = 0
+let projectile: Sprite = null
 let randomLocation: tiles.Location = null
 let list: tiles.Location[] = []
 let enemyTank: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
-let bricksDifficulty = 0
-let projectile: Sprite = null
 let tankCharacter: Sprite = null
+let bricksDifficulty = 0
 let projectileSpeed = 0
 info.setScore(0)
 projectileSpeed = 80
 createPlayer()
 imitLevel(1)
 createEnemy()
+game.onUpdate(function () {
+    if (controller.up.isPressed()) {
+        sprites.setDataString(tankCharacter, "orientation", "up")
+        tankCharacter.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . f f f . . . e e . . . f f f . 
+            . f f f f f f e e f f f f d f . 
+            . f d f 4 4 4 e e 4 4 4 f f f . 
+            . f f f 4 4 4 e e 4 4 4 f d f . 
+            . f d f 4 4 2 e e 2 4 4 f f f . 
+            . f f f 4 4 2 e e 2 4 4 f d f . 
+            . f d f 4 4 2 2 2 2 4 4 f f f . 
+            . f f f 4 4 4 4 4 4 4 4 f d f . 
+            . f d f 4 f 4 f f 4 f 4 f f f . 
+            . f f f 4 4 4 4 4 4 4 4 f d f . 
+            . f d f f f f f f f f f f f f . 
+            . f f f . . . . . . . . f f f . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (controller.down.isPressed()) {
+        sprites.setDataString(tankCharacter, "orientation", "down")
+        tankCharacter.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . f f f . . . . . . . . f f f . 
+            . f f f f f f f f f f f f d f . 
+            . f d f 4 4 4 4 4 4 4 4 f f f . 
+            . f f f 4 f 4 f f 4 f 4 f d f . 
+            . f d f 4 4 4 4 4 4 4 4 f f f . 
+            . f f f 4 4 2 2 2 2 4 4 f d f . 
+            . f d f 4 4 2 e e 2 4 4 f f f . 
+            . f f f 4 4 2 e e 2 4 4 f d f . 
+            . f d f 4 4 4 e e 4 4 4 f f f . 
+            . f f f 4 4 4 e e 4 4 4 f d f . 
+            . f d f f f f e e f f f f f f . 
+            . f f f . . . e e . . . f f f . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (controller.left.isPressed()) {
+        sprites.setDataString(tankCharacter, "orientation", "left")
+        tankCharacter.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f d f d f d f d f d f f . 
+            . . . f f f f f f f f f f f f . 
+            . . . . f 4 4 4 4 4 4 4 4 f . . 
+            . . . . f 4 4 4 4 4 4 f 4 f . . 
+            . . . . f 4 4 2 2 2 4 4 4 f . . 
+            . e e e e e e e e 2 4 f 4 f . . 
+            . e e e e e e e e 2 4 f 4 f . . 
+            . . . . f 4 4 2 2 2 4 4 4 f . . 
+            . . . . f 4 4 4 4 4 4 f 4 f . . 
+            . . . . f 4 4 4 4 4 4 4 4 f . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f f d f d f d f d f d f . 
+            . . . f f f f f f f f f f f f . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (controller.right.isPressed()) {
+        sprites.setDataString(tankCharacter, "orientation", "right")
+        tankCharacter.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f d f d f d f d f d f f . . . 
+            . f f f f f f f f f f f f . . . 
+            . . f 4 4 4 4 4 4 4 4 f . . . . 
+            . . f 4 f 4 4 4 4 4 4 f . . . . 
+            . . f 4 4 4 2 2 2 4 4 f . . . . 
+            . . f 4 f 4 2 e e e e e e e e . 
+            . . f 4 f 4 2 e e e e e e e e . 
+            . . f 4 4 4 2 2 2 4 4 f . . . . 
+            . . f 4 f 4 4 4 4 4 4 f . . . . 
+            . . f 4 4 4 4 4 4 4 4 f . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f f d f d f d f d f d f . . . 
+            . f f f f f f f f f f f f . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    }
+})
