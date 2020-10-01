@@ -2,8 +2,99 @@ namespace SpriteKind {
     export const Wall = SpriteKind.create()
     export const Present = SpriteKind.create()
 }
+function tankOrientation (tank: Sprite, tankID: number, orientation: string) {
+    if (orientation == "up") {
+        tank.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . f f f . . . e e . . . f f f . 
+            . f f f f f f e e f f f f d f . 
+            . f d f 1 1 1 e e 1 1 1 f f f . 
+            . f f f 1 1 1 e e 1 1 1 f d f . 
+            . f d f 1 1 2 e e 2 1 1 f f f . 
+            . f f f 1 1 2 e e 2 1 1 f d f . 
+            . f d f 1 1 2 2 2 2 1 1 f f f . 
+            . f f f 1 1 1 1 1 1 1 1 f d f . 
+            . f d f 1 f 1 f f 1 f 1 f f f . 
+            . f f f 1 1 1 1 1 1 1 1 f d f . 
+            . f d f f f f f f f f f f f f . 
+            . f f f . . . . . . . . f f f . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (orientation == "down") {
+        tank.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . f f f . . . . . . . . f f f . 
+            . f f f f f f f f f f f f d f . 
+            . f d f 1 1 1 1 1 1 1 1 f f f . 
+            . f f f 1 f 1 f f 1 f 1 f d f . 
+            . f d f 1 1 1 1 1 1 1 1 f f f . 
+            . f f f 1 1 2 2 2 2 1 1 f d f . 
+            . f d f 1 1 2 e e 2 1 1 f f f . 
+            . f f f 1 1 2 e e 2 1 1 f d f . 
+            . f d f 1 1 1 e e 1 1 1 f f f . 
+            . f f f 1 1 1 e e 1 1 1 f d f . 
+            . f d f f f f e e f f f f f f . 
+            . f f f . . . e e . . . f f f . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . e e . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (orientation == "right") {
+        tank.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f d f d f d f d f d f f . . . 
+            . f f f f f f f f f f f f . . . 
+            . . f 1 1 1 1 1 1 1 1 f . . . . 
+            . . f 1 f 1 1 1 1 1 1 f . . . . 
+            . . f 1 1 1 2 2 2 1 1 f . . . . 
+            . . f 1 f 1 2 e e e e e e e e . 
+            . . f 1 f 1 2 e e e e e e e e . 
+            . . f 1 1 1 2 2 2 1 1 f . . . . 
+            . . f 1 f 1 1 1 1 1 1 f . . . . 
+            . . f 1 1 1 1 1 1 1 1 f . . . . 
+            . f f f f f f f f f f f f . . . 
+            . f f d f d f d f d f d f . . . 
+            . f f f f f f f f f f f f . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else if (orientation == "left") {
+        tank.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f d f d f d f d f d f f . 
+            . . . f f f f f f f f f f f f . 
+            . . . . f 1 1 1 1 1 1 1 1 f . . 
+            . . . . f 1 1 1 1 1 1 f 1 f . . 
+            . . . . f 1 1 2 2 2 1 1 1 f . . 
+            . e e e e e e e e 2 1 f 1 f . . 
+            . e e e e e e e e 2 1 f 1 f . . 
+            . . . . f 1 1 2 2 2 1 1 1 f . . 
+            . . . . f 1 1 1 1 1 1 f 1 f . . 
+            . . . . f 1 1 1 1 1 1 1 1 f . . 
+            . . . f f f f f f f f f f f f . 
+            . . . f f d f d f d f d f d f . 
+            . . . f f f f f f f f f f f f . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    }
+    sprites.setDataString(tank, "orientation", orientation)
+    tankColorise(tank, tankID)
+}
+function tankChangeScore (tankID: number, score: number) {
+    if (tankID == 1) {
+        info.player1.changeScoreBy(score)
+    } else if (tankID == 2) {
+        info.player2.changeScoreBy(score)
+    } else if (tankID == 3) {
+        info.player3.changeScoreBy(score)
+    } else if (tankID == 4) {
+        info.player4.changeScoreBy(score)
+    }
+}
 function imitLevel (level: number) {
-    bricksDifficulty = 30
     scene.setBackgroundColor(7)
     if (level == 0) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000202020202020202020203010101010101010103010101010101010101010101010101010101010101010101010101010101010101010101010101010301010101010101010302020202020202020202`, img`
@@ -16,7 +107,7 @@ function imitLevel (level: number) {
             . . . . . . . . . . 
             2 2 2 2 2 2 2 2 2 2 
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3], TileScale.Sixteen))
-        randomWalls()
+        createRandomWalls()
     } else if (level == 1) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000003010101010101010103010201020101020102010101010104040101010101010101040401010101010201020101020102010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
@@ -27,10 +118,20 @@ function imitLevel (level: number) {
             . 2 . 2 . . 2 . 2 . 
             . . . . . . . . . . 
             2 2 2 2 2 2 2 2 2 2 
-            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4,myTiles.tile1], TileScale.Sixteen))
-        randomWalls()
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+        createRandomWalls()
     }
-    placeTank(tankCharacter)
+}
+function tankColorise (tank: Sprite, tankID: number) {
+    if (tankID == 1) {
+        tank.image.replace(1, 4)
+    } else if (tankID == 2) {
+        tank.image.replace(1, 2)
+    } else if (tankID == 3) {
+        tank.image.replace(1, 9)
+    } else if (tankID == 4) {
+        tank.image.replace(1, 7)
+    }
 }
 function placeTank (tank: Sprite) {
     startLocations = tiles.getTilesByType(myTiles.tile3)
@@ -38,34 +139,60 @@ function placeTank (tank: Sprite) {
     tiles.placeOnTile(tank, randomStartLocation)
     tiles.setTileAt(randomStartLocation, myTiles.tile5)
 }
-function createEnemy () {
-    enemyTank = sprites.create(img`
+function tankShoot (tank: Sprite, tankID: number) {
+    if (sprites.readDataNumber(tank, "activeMunition") < sprites.readDataNumber(tank, "maxMunition")) {
+        music.pewPew.play()
+        projectile = sprites.create(img`
+            2 f 
+            f 2 
+            `, SpriteKind.Projectile)
+        projectile.setPosition(tank.x, tank.y)
+        sprites.setDataNumber(projectile, "tankID", tankID)
+        if (sprites.readDataString(tank, "orientation") == "up") {
+            projectile.setPosition(tank.x, tank.y - 7)
+            projectile.setVelocity(0, projectileSpeed * -1)
+        } else if (sprites.readDataString(tank, "orientation") == "down") {
+            projectile.y += 5
+            projectile.setVelocity(0, projectileSpeed)
+        } else if (sprites.readDataString(tank, "orientation") == "right") {
+            projectile.x += 5
+            projectile.setVelocity(projectileSpeed, 0)
+        } else if (sprites.readDataString(tank, "orientation") == "left") {
+            projectile.x += -5
+            projectile.setVelocity(projectileSpeed * -1, 0)
+        }
+    }
+}
+function tankCreate (tank: Sprite, tankID: number) {
+    newTank = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . e e . . . . . . . 
         . . . . . . . e e . . . . . . . 
         . f f f . . . e e . . . f f f . 
         . f f f f f f e e f f f f d f . 
-        . f d f 2 2 2 e e 2 2 2 f f f . 
-        . f f f 2 2 2 e e 2 2 2 f d f . 
-        . f d f 2 2 5 e e 5 2 2 f f f . 
-        . f f f 2 2 5 e e 5 2 2 f d f . 
-        . f d f 2 2 5 5 5 5 2 2 f f f . 
-        . f f f 2 2 2 2 2 2 2 2 f d f . 
-        . f d f 2 f 2 f f 2 f 2 f f f . 
-        . f f f 2 2 2 2 2 2 2 2 f d f . 
+        . f d f 1 1 1 e e 1 1 1 f f f . 
+        . f f f 1 1 1 e e 1 1 1 f d f . 
+        . f d f 1 1 2 e e 2 1 1 f f f . 
+        . f f f 1 1 2 e e 2 1 1 f d f . 
+        . f d f 1 1 2 2 2 2 1 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f 1 f 1 f f 1 f 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
         . f d f f f f f f f f f f f f . 
         . f f f . . . . . . . . f f f . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Enemy)
-    placeTank(enemyTank)
-}
-function randomWalls () {
-    list = tiles.getTilesByType(sprites.castle.tilePath5)
-    for (let index = 0; index < bricksDifficulty; index++) {
-        randomLocation = list[randint(0, list.length - 1)]
-        tiles.setTileAt(randomLocation, myTiles.tile1)
-        tiles.setWallAt(randomLocation, true)
+    tank.setFlag(SpriteFlag.StayInScreen, true)
+    sprites.setDataNumber(tank, "speed", 45)
+    sprites.setDataNumber(tank, "maxMunition", 3)
+    sprites.setDataNumber(tank, "activeMunition", 0)
+    sprites.setDataString(tank, "orientation", "up")
+    if (tank.kind() == SpriteKind.Player) {
+        tank.setKind(SpriteKind.Player)
+        controller.moveSprite(tank, sprites.readDataNumber(tank, "speed"), sprites.readDataNumber(tank, "speed"))
     }
+    placeTank(tank)
+    tankOrientation(tank, tankID, "up")
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -73,38 +200,25 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, other
     music.baDing.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
-    if (sprites.readDataNumber(tankCharacter, "activeMunition") < sprites.readDataNumber(tankCharacter, "maxMunition")) {
-        music.pewPew.play()
-        projectile = sprites.create(img`
-            2 f 
-            f 2 
-            `, SpriteKind.Projectile)
-        projectile.setPosition(tankCharacter.x, tankCharacter.y)
-        console.log(sprites.readDataString(tankCharacter, "orientation"))
-        if (sprites.readDataString(tankCharacter, "orientation") == "up") {
-            projectile.setPosition(tankCharacter.x, tankCharacter.y - 7)
-            projectile.setVelocity(0, projectileSpeed * -1)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "down") {
-            projectile.y += 5
-            projectile.setVelocity(0, projectileSpeed)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "right") {
-            projectile.x += 5
-            projectile.setVelocity(projectileSpeed, 0)
-        } else if (sprites.readDataString(tankCharacter, "orientation") == "left") {
-            projectile.x += -5
-            projectile.setVelocity(projectileSpeed * -1, 0)
-        }
-    }
+    tankShoot(tank_01, 1)
 })
+function createRandomWalls () {
+    wallLocationLIist = tiles.getTilesByType(sprites.castle.tilePath5)
+    for (let index = 0; index < bricksDifficulty; index++) {
+        randomLocation = wallLocationLIist[randint(0, wallLocationLIist.length - 1)]
+        tiles.setTileAt(randomLocation, myTiles.tile1)
+        tiles.setWallAt(randomLocation, true)
+    }
+}
 scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        info.player1.changeScoreBy(5)
+        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 5)
     } else if (tiles.tileAtLocationEquals(location, myTiles.tile4)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        info.player1.changeScoreBy(25)
+        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 25)
         randomPresent = randint(1, 3)
         if (randomPresent == 1) {
             tiles.setTileAt(location, sprites.dungeon.floorLight0)
@@ -129,144 +243,100 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
                 b b b b b b b b b b b b b b b . 
                 `, SpriteKind.Present)
             tiles.placeOnTile(sprPresent, location)
-        } else if (randomPresent == 3) {
-        	
         }
     }
     sprite.destroy()
 })
-function createPlayer () {
-    tankCharacter = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . e e . . . . . . . 
-        . . . . . . . e e . . . . . . . 
-        . f f f . . . e e . . . f f f . 
-        . f f f f f f e e f f f f d f . 
-        . f d f 4 4 4 e e 4 4 4 f f f . 
-        . f f f 4 4 4 e e 4 4 4 f d f . 
-        . f d f 4 4 2 e e 2 4 4 f f f . 
-        . f f f 4 4 2 e e 2 4 4 f d f . 
-        . f d f 4 4 2 2 2 2 4 4 f f f . 
-        . f f f 4 4 4 4 4 4 4 4 f d f . 
-        . f d f 4 f 4 f f 4 f 4 f f f . 
-        . f f f 4 4 4 4 4 4 4 4 f d f . 
-        . f d f f f f f f f f f f f f . 
-        . f f f . . . . . . . . f f f . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
-    sprites.setDataString(tankCharacter, "orientation", "up")
-    sprites.setDataNumber(tankCharacter, "speed", 45)
-    sprites.setDataNumber(tankCharacter, "maxMunition", 3)
-    sprites.setDataNumber(tankCharacter, "activeMunition", 0)
-    tankCharacter.setFlag(SpriteFlag.StayInScreen, true)
-    controller.moveSprite(tankCharacter, sprites.readDataNumber(tankCharacter, "speed"), sprites.readDataNumber(tankCharacter, "speed"))
-}
 sprites.onCreated(SpriteKind.Projectile, function (sprite) {
-    sprites.changeDataNumberBy(tankCharacter, "activeMunition", 1)
+    sprites.changeDataNumberBy(tank_01, "activeMunition", 1)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, otherSprite) {
     otherSprite.destroy()
     sprite.destroy()
 })
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
+    let tankCharacter: Sprite = null
     sprites.changeDataNumberBy(tankCharacter, "activeMunition", -1)
 })
 let sprPresent: Sprite = null
 let randomPresent = 0
-let projectile: Sprite = null
 let randomLocation: tiles.Location = null
-let list: tiles.Location[] = []
-let enemyTank: Sprite = null
+let wallLocationLIist: tiles.Location[] = []
+let newTank: Sprite = null
+let projectile: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
-let tankCharacter: Sprite = null
-let bricksDifficulty = 0
+let tank_01: Sprite = null
 let projectileSpeed = 0
-info.player1.setScore(0)
+let bricksDifficulty = 0
+bricksDifficulty = 30
 projectileSpeed = 80
-createPlayer()
 imitLevel(1)
-createEnemy()
+tank_01 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . f f f . . . e e . . . f f f . 
+    . f f f f f f e e f f f f d f . 
+    . f d f 1 1 1 e e 1 1 1 f f f . 
+    . f f f 1 1 1 e e 1 1 1 f d f . 
+    . f d f 1 1 2 e e 2 1 1 f f f . 
+    . f f f 1 1 2 e e 2 1 1 f d f . 
+    . f d f 1 1 2 2 2 2 1 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f 1 f 1 f f 1 f 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f f f f f f f f f f f f . 
+    . f f f . . . . . . . . f f f . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
+let tank_02 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . f f f . . . e e . . . f f f . 
+    . f f f f f f e e f f f f d f . 
+    . f d f 1 1 1 e e 1 1 1 f f f . 
+    . f f f 1 1 1 e e 1 1 1 f d f . 
+    . f d f 1 1 2 e e 2 1 1 f f f . 
+    . f f f 1 1 2 e e 2 1 1 f d f . 
+    . f d f 1 1 2 2 2 2 1 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f 1 f 1 f f 1 f 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f f f f f f f f f f f f . 
+    . f f f . . . . . . . . f f f . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+let tank_03 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . f f f . . . e e . . . f f f . 
+    . f f f f f f e e f f f f d f . 
+    . f d f 1 1 1 e e 1 1 1 f f f . 
+    . f f f 1 1 1 e e 1 1 1 f d f . 
+    . f d f 1 1 2 e e 2 1 1 f f f . 
+    . f f f 1 1 2 e e 2 1 1 f d f . 
+    . f d f 1 1 2 2 2 2 1 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f 1 f 1 f f 1 f 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f f f f f f f f f f f f . 
+    . f f f . . . . . . . . f f f . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+tankCreate(tank_01, 1)
+tankCreate(tank_02, 2)
+tankCreate(tank_03, 3)
 game.onUpdate(function () {
     if (controller.player1.isPressed(ControllerButton.Up)) {
-        sprites.setDataString(tankCharacter, "orientation", "up")
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . f f f . . . e e . . . f f f . 
-            . f f f f f f e e f f f f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 2 2 2 2 4 4 f f f . 
-            . f f f 4 4 4 4 4 4 4 4 f d f . 
-            . f d f 4 f 4 f f 4 f 4 f f f . 
-            . f f f 4 4 4 4 4 4 4 4 f d f . 
-            . f d f f f f f f f f f f f f . 
-            . f f f . . . . . . . . f f f . 
-            . . . . . . . . . . . . . . . . 
-            `)
+        tankOrientation(tank_01, 1, "up")
     } else if (controller.player1.isPressed(ControllerButton.Down)) {
-        sprites.setDataString(tankCharacter, "orientation", "down")
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . f f f . . . . . . . . f f f . 
-            . f f f f f f f f f f f f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 f 4 f f 4 f 4 f d f . 
-            . f d f 4 4 4 4 4 4 4 4 f f f . 
-            . f f f 4 4 2 2 2 2 4 4 f d f . 
-            . f d f 4 4 2 e e 2 4 4 f f f . 
-            . f f f 4 4 2 e e 2 4 4 f d f . 
-            . f d f 4 4 4 e e 4 4 4 f f f . 
-            . f f f 4 4 4 e e 4 4 4 f d f . 
-            . f d f f f f e e f f f f f f . 
-            . f f f . . . e e . . . f f f . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . e e . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `)
+        tankOrientation(tank_01, 1, "down")
     } else if (controller.player1.isPressed(ControllerButton.Left)) {
-        sprites.setDataString(tankCharacter, "orientation", "left")
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . f f f f f f f f f f f f . 
-            . . . f d f d f d f d f d f f . 
-            . . . f f f f f f f f f f f f . 
-            . . . . f 4 4 4 4 4 4 4 4 f . . 
-            . . . . f 4 4 4 4 4 4 f 4 f . . 
-            . . . . f 4 4 2 2 2 4 4 4 f . . 
-            . e e e e e e e e 2 4 f 4 f . . 
-            . e e e e e e e e 2 4 f 4 f . . 
-            . . . . f 4 4 2 2 2 4 4 4 f . . 
-            . . . . f 4 4 4 4 4 4 f 4 f . . 
-            . . . . f 4 4 4 4 4 4 4 4 f . . 
-            . . . f f f f f f f f f f f f . 
-            . . . f f d f d f d f d f d f . 
-            . . . f f f f f f f f f f f f . 
-            . . . . . . . . . . . . . . . . 
-            `)
+        tankOrientation(tank_01, 1, "left")
     } else if (controller.player1.isPressed(ControllerButton.Right)) {
-        sprites.setDataString(tankCharacter, "orientation", "right")
-        tankCharacter.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . f f f f f f f f f f f f . . . 
-            . f d f d f d f d f d f f . . . 
-            . f f f f f f f f f f f f . . . 
-            . . f 4 4 4 4 4 4 4 4 f . . . . 
-            . . f 4 f 4 4 4 4 4 4 f . . . . 
-            . . f 4 4 4 2 2 2 4 4 f . . . . 
-            . . f 4 f 4 2 e e e e e e e e . 
-            . . f 4 f 4 2 e e e e e e e e . 
-            . . f 4 4 4 2 2 2 4 4 f . . . . 
-            . . f 4 f 4 4 4 4 4 4 f . . . . 
-            . . f 4 4 4 4 4 4 4 4 f . . . . 
-            . f f f f f f f f f f f f . . . 
-            . f f d f d f d f d f d f . . . 
-            . f f f f f f f f f f f f . . . 
-            . . . . . . . . . . . . . . . . 
-            `)
+        tankOrientation(tank_01, 1, "right")
     }
 })
