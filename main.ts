@@ -13,7 +13,7 @@ function tankChangeActiveMunition (tankID: number, munition: number) {
         sprites.changeDataNumberBy(tank_04, "activeMunition", munition)
     }
 }
-function tankOrientation (tank: Sprite, tankID: number, orientation: string) {
+function tankOrientation (tank: Sprite, orientation: string) {
     if (orientation == "up") {
         tank.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -92,7 +92,7 @@ function tankOrientation (tank: Sprite, tankID: number, orientation: string) {
             `)
     }
     sprites.setDataString(tank, "orientation", orientation)
-    tankColorise(tank, tankID)
+    tankColorise(tank, sprites.readDataNumber(tank, "tankID"))
 }
 function tankChangeScore (tankID: number, score: number) {
     if (tankID == 1) {
@@ -161,7 +161,7 @@ function placeTank (tank: Sprite) {
     tiles.placeOnTile(tank, randomStartLocation)
     tiles.setTileAt(randomStartLocation, myTiles.tile5)
 }
-function tankShoot (tank: Sprite, tankID: number) {
+function tankShoot (tank: Sprite) {
     if (sprites.readDataNumber(tank, "activeMunition") < sprites.readDataNumber(tank, "maxMunition")) {
         music.pewPew.play()
         projectile = sprites.create(img`
@@ -169,7 +169,7 @@ function tankShoot (tank: Sprite, tankID: number) {
             f 2 
             `, SpriteKind.Projectile)
         projectile.setPosition(tank.x, tank.y)
-        sprites.setDataNumber(projectile, "tankID", tankID)
+        sprites.setDataNumber(projectile, "tankID", sprites.readDataNumber(tank, "tankID"))
         if (sprites.readDataString(tank, "orientation") == "up") {
             projectile.setPosition(tank.x, tank.y - 7)
             projectile.setVelocity(0, projectileSpeed * -1)
@@ -196,7 +196,7 @@ function tankCreate (tank: Sprite, tankID: number) {
         controller.moveSprite(tank, sprites.readDataNumber(tank, "speed"), sprites.readDataNumber(tank, "speed"))
     }
     placeTank(tank)
-    tankOrientation(tank, tankID, "up")
+    tankOrientation(tank, "up")
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -209,7 +209,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, other
     music.baDing.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
-    tankShoot(tank_01, 1)
+    tankShoot(tank_01)
 })
 function createRandomWalls () {
     wallLocationLIist = tiles.getTilesByType(sprites.castle.tilePath5)
@@ -266,6 +266,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
 })
+let tanks: Sprite[] = []
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
@@ -360,12 +361,38 @@ tankCreate(tank_03, 3)
 tankCreate(tank_04, 4)
 game.onUpdate(function () {
     if (controller.player1.isPressed(ControllerButton.Up)) {
-        tankOrientation(tank_01, 1, "up")
+        tankOrientation(tank_01, "up")
     } else if (controller.player1.isPressed(ControllerButton.Down)) {
-        tankOrientation(tank_01, 1, "down")
+        tankOrientation(tank_01, "down")
     } else if (controller.player1.isPressed(ControllerButton.Left)) {
-        tankOrientation(tank_01, 1, "left")
+        tankOrientation(tank_01, "left")
     } else if (controller.player1.isPressed(ControllerButton.Right)) {
-        tankOrientation(tank_01, 1, "right")
+        tankOrientation(tank_01, "right")
+    }
+})
+game.onUpdateInterval(500, function () {
+    tanks = sprites.allOfKind(SpriteKind.Enemy)
+    for (let value of tanks) {
+        if (value.tileKindAt(TileDirection.Top, myTiles.tile1) || value.tileKindAt(TileDirection.Top, myTiles.tile4)) {
+            tankOrientation(value, "up")
+            for (let index = 0; index < 3; index++) {
+                tankShoot(value)
+            }
+        } else if (value.tileKindAt(TileDirection.Bottom, myTiles.tile1) || value.tileKindAt(TileDirection.Bottom, myTiles.tile4)) {
+            tankOrientation(value, "down")
+            for (let index = 0; index < 3; index++) {
+                tankShoot(value)
+            }
+        } else if (value.tileKindAt(TileDirection.Left, myTiles.tile1) || value.tileKindAt(TileDirection.Left, myTiles.tile4)) {
+            tankOrientation(value, "left")
+            for (let index = 0; index < 3; index++) {
+                tankShoot(value)
+            }
+        } else if (value.tileKindAt(TileDirection.Right, myTiles.tile1) || value.tileKindAt(TileDirection.Right, myTiles.tile4)) {
+            tankOrientation(value, "right")
+            for (let index = 0; index < 3; index++) {
+                tankShoot(value)
+            }
+        }
     }
 })
