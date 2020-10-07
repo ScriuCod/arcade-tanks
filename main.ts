@@ -266,6 +266,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
 })
+let tankAction = false
 let tanks: Sprite[] = []
 let sprPresent: Sprite = null
 let randomPresent = 0
@@ -373,25 +374,37 @@ game.onUpdate(function () {
 game.onUpdateInterval(500, function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
     for (let value of tanks) {
+        tankAction = false
         if (value.tileKindAt(TileDirection.Top, myTiles.tile1) || value.tileKindAt(TileDirection.Top, myTiles.tile4)) {
             tankOrientation(value, "up")
-            for (let index = 0; index < 3; index++) {
-                tankShoot(value)
-            }
+            tankShoot(value)
+            tankAction = true
         } else if (value.tileKindAt(TileDirection.Bottom, myTiles.tile1) || value.tileKindAt(TileDirection.Bottom, myTiles.tile4)) {
             tankOrientation(value, "down")
-            for (let index = 0; index < 3; index++) {
-                tankShoot(value)
-            }
+            tankShoot(value)
+            tankAction = true
         } else if (value.tileKindAt(TileDirection.Left, myTiles.tile1) || value.tileKindAt(TileDirection.Left, myTiles.tile4)) {
             tankOrientation(value, "left")
-            for (let index = 0; index < 3; index++) {
-                tankShoot(value)
-            }
+            tankShoot(value)
+            tankAction = true
         } else if (value.tileKindAt(TileDirection.Right, myTiles.tile1) || value.tileKindAt(TileDirection.Right, myTiles.tile4)) {
             tankOrientation(value, "right")
-            for (let index = 0; index < 3; index++) {
-                tankShoot(value)
+            tankShoot(value)
+            tankAction = true
+        }
+        if (tankAction == false) {
+            if (value.tileKindAt(TileDirection.Top, sprites.castle.tilePath5)) {
+                tankOrientation(value, "up")
+                tankMove(value, "up")
+            } else if (value.tileKindAt(TileDirection.Bottom, sprites.castle.tilePath5)) {
+                tankOrientation(value, "down")
+                tankMove(value, "down")
+            } else if (value.tileKindAt(TileDirection.Left, sprites.castle.tilePath5)) {
+                tankOrientation(value, "left")
+                tankMove(value, "left")
+            } else if (value.tileKindAt(TileDirection.Right, sprites.castle.tilePath5)) {
+                tankOrientation(value, "right")
+                tankMove(value, "right")
             }
         }
     }
