@@ -2,6 +2,17 @@ namespace SpriteKind {
     export const Wall = SpriteKind.create()
     export const Present = SpriteKind.create()
 }
+function tankChangeActiveMunition (tankID: number, munition: number) {
+    if (tankID == 1) {
+        sprites.changeDataNumberBy(tank_01, "activeMunition", munition)
+    } else if (tankID == 2) {
+        sprites.changeDataNumberBy(tank_02, "activeMunition", munition)
+    } else if (tankID == 3) {
+        sprites.changeDataNumberBy(tank_03, "activeMunition", munition)
+    } else if (tankID == 4) {
+        sprites.changeDataNumberBy(tank_04, "activeMunition", munition)
+    }
+}
 function tankOrientation (tank: Sprite, tankID: number, orientation: string) {
     if (orientation == "up") {
         tank.setImage(img`
@@ -94,6 +105,17 @@ function tankChangeScore (tankID: number, score: number) {
         info.player4.changeScoreBy(score)
     }
 }
+function tankMove (tank: Sprite, orientation: string) {
+    if (orientation == "up") {
+        tank.setVelocity(-10, 0)
+    } else if (orientation == "down") {
+        tank.setVelocity(10, 0)
+    } else if (orientation == "right") {
+        tank.setVelocity(0, 10)
+    } else if (orientation == "left") {
+        tank.setVelocity(0, -10)
+    }
+}
 function imitLevel (level: number) {
     scene.setBackgroundColor(7)
     if (level == 0) {
@@ -164,39 +186,26 @@ function tankShoot (tank: Sprite, tankID: number) {
     }
 }
 function tankCreate (tank: Sprite, tankID: number) {
-    newTank = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . e e . . . . . . . 
-        . . . . . . . e e . . . . . . . 
-        . f f f . . . e e . . . f f f . 
-        . f f f f f f e e f f f f d f . 
-        . f d f 1 1 1 e e 1 1 1 f f f . 
-        . f f f 1 1 1 e e 1 1 1 f d f . 
-        . f d f 1 1 2 e e 2 1 1 f f f . 
-        . f f f 1 1 2 e e 2 1 1 f d f . 
-        . f d f 1 1 2 2 2 2 1 1 f f f . 
-        . f f f 1 1 1 1 1 1 1 1 f d f . 
-        . f d f 1 f 1 f f 1 f 1 f f f . 
-        . f f f 1 1 1 1 1 1 1 1 f d f . 
-        . f d f f f f f f f f f f f f . 
-        . f f f . . . . . . . . f f f . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Enemy)
     tank.setFlag(SpriteFlag.StayInScreen, true)
     sprites.setDataNumber(tank, "speed", 45)
+    sprites.setDataNumber(tank, "tankID", tankID)
     sprites.setDataNumber(tank, "maxMunition", 3)
     sprites.setDataNumber(tank, "activeMunition", 0)
     sprites.setDataString(tank, "orientation", "up")
     if (tank.kind() == SpriteKind.Player) {
-        tank.setKind(SpriteKind.Player)
         controller.moveSprite(tank, sprites.readDataNumber(tank, "speed"), sprites.readDataNumber(tank, "speed"))
     }
     placeTank(tank)
     tankOrientation(tank, tankID, "up")
 }
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
+    music.baDing.play()
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
-    info.player1.changeScoreBy(75)
+    tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
     music.baDing.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
@@ -248,24 +257,25 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     sprite.destroy()
 })
 sprites.onCreated(SpriteKind.Projectile, function (sprite) {
-    sprites.changeDataNumberBy(tank_01, "activeMunition", 1)
+    tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), 1)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, otherSprite) {
     otherSprite.destroy()
     sprite.destroy()
 })
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
-    let tankCharacter: Sprite = null
-    sprites.changeDataNumberBy(tankCharacter, "activeMunition", -1)
+    tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
 })
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
 let wallLocationLIist: tiles.Location[] = []
-let newTank: Sprite = null
 let projectile: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
+let tank_04: Sprite = null
+let tank_03: Sprite = null
+let tank_02: Sprite = null
 let tank_01: Sprite = null
 let projectileSpeed = 0
 let bricksDifficulty = 0
@@ -290,7 +300,7 @@ tank_01 = sprites.create(img`
     . f f f . . . . . . . . f f f . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
-let tank_02 = sprites.create(img`
+tank_02 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
     . . . . . . . e e . . . . . . . 
@@ -308,7 +318,25 @@ let tank_02 = sprites.create(img`
     . f f f . . . . . . . . f f f . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Enemy)
-let tank_03 = sprites.create(img`
+tank_03 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . . . . . . . e e . . . . . . . 
+    . f f f . . . e e . . . f f f . 
+    . f f f f f f e e f f f f d f . 
+    . f d f 1 1 1 e e 1 1 1 f f f . 
+    . f f f 1 1 1 e e 1 1 1 f d f . 
+    . f d f 1 1 2 e e 2 1 1 f f f . 
+    . f f f 1 1 2 e e 2 1 1 f d f . 
+    . f d f 1 1 2 2 2 2 1 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f 1 f 1 f f 1 f 1 f f f . 
+    . f f f 1 1 1 1 1 1 1 1 f d f . 
+    . f d f f f f f f f f f f f f . 
+    . f f f . . . . . . . . f f f . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+tank_04 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
     . . . . . . . e e . . . . . . . 
@@ -329,6 +357,7 @@ let tank_03 = sprites.create(img`
 tankCreate(tank_01, 1)
 tankCreate(tank_02, 2)
 tankCreate(tank_03, 3)
+tankCreate(tank_04, 4)
 game.onUpdate(function () {
     if (controller.player1.isPressed(ControllerButton.Up)) {
         tankOrientation(tank_01, 1, "up")
