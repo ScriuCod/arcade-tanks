@@ -105,15 +105,39 @@ function tankChangeScore (tankID: number, score: number) {
         info.player4.changeScoreBy(score)
     }
 }
+function tankRandomDecision (tank: Sprite, _type: string) {
+    listPosibilities = []
+    if (_type == "shoot") {
+        tile_01 = myTiles.tile1
+        tile_02 = myTiles.tile4
+    } else if (_type == "walk") {
+        tile_01 = sprites.castle.tilePath5
+        tile_01 = myTiles.tile5
+    }
+    if (tank.tileKindAt(TileDirection.Top, tile_01) || tank.tileKindAt(TileDirection.Top, tile_02)) {
+        listPosibilities.push("up")
+    }
+    if (tank.tileKindAt(TileDirection.Bottom, tile_01) || tank.tileKindAt(TileDirection.Bottom, tile_02)) {
+        listPosibilities.push("down")
+    }
+    if (tank.tileKindAt(TileDirection.Left, tile_01) || tank.tileKindAt(TileDirection.Left, tile_02)) {
+        listPosibilities.push("left")
+    }
+    if (tank.tileKindAt(TileDirection.Right, tile_01) || tank.tileKindAt(TileDirection.Right, tile_02)) {
+        listPosibilities.push("right")
+    }
+    console.logValue("randomDecision-" + _type + "-" + sprites.readDataNumber(tank, "tankID"), listPosibilities[randint(0, listPosibilities.length - 1)])
+    return listPosibilities[randint(0, listPosibilities.length - 1)]
+}
 function tankMove (tank: Sprite, orientation: string) {
     if (orientation == "up") {
-        tank.setVelocity(-10, 0)
+        tank.vy += -20
     } else if (orientation == "down") {
-        tank.setVelocity(10, 0)
+        tank.vy += 20
     } else if (orientation == "right") {
-        tank.setVelocity(0, 10)
+        tank.vx += 20
     } else if (orientation == "left") {
-        tank.setVelocity(0, -10)
+        tank.vx += -20
     }
 }
 function imitLevel (level: number) {
@@ -159,7 +183,7 @@ function placeTank (tank: Sprite) {
     startLocations = tiles.getTilesByType(myTiles.tile3)
     randomStartLocation = startLocations[randint(0, startLocations.length - 1)]
     tiles.placeOnTile(tank, randomStartLocation)
-    tiles.setTileAt(randomStartLocation, myTiles.tile5)
+    tiles.setTileAt(randomStartLocation, sprites.castle.tilePath5)
 }
 function tankShoot (tank: Sprite) {
     if (sprites.readDataNumber(tank, "activeMunition") < sprites.readDataNumber(tank, "maxMunition")) {
@@ -186,6 +210,7 @@ function tankShoot (tank: Sprite) {
     }
 }
 function tankCreate (tank: Sprite, tankID: number) {
+    tank.setFlag(SpriteFlag.ShowPhysics, false)
     tank.setFlag(SpriteFlag.StayInScreen, true)
     sprites.setDataNumber(tank, "speed", 45)
     sprites.setDataNumber(tank, "tankID", tankID)
@@ -266,8 +291,25 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
 })
-let tankAction = false
+function tankRandomOrientation (tank: Sprite) {
+    setOrientationPosibilities = []
+    if (tank.tileKindAt(TileDirection.Top, sprites.castle.tilePath5)) {
+        setOrientationPosibilities.push("up")
+    }
+    if (tank.tileKindAt(TileDirection.Bottom, sprites.castle.tilePath5)) {
+        setOrientationPosibilities.push("down")
+    }
+    if (tank.tileKindAt(TileDirection.Right, sprites.castle.tilePath5)) {
+        setOrientationPosibilities.push("right")
+    }
+    if (tank.tileKindAt(TileDirection.Left, sprites.castle.tilePath5)) {
+        setOrientationPosibilities.push("left")
+    }
+}
+let randomOrientation = ""
+let randomShoot = ""
 let tanks: Sprite[] = []
+let setOrientationPosibilities: string[] = []
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
@@ -275,6 +317,9 @@ let wallLocationLIist: tiles.Location[] = []
 let projectile: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
+let tile_02: Image = null
+let tile_01: Image = null
+let listPosibilities: string[] = []
 let tank_04: Sprite = null
 let tank_03: Sprite = null
 let tank_02: Sprite = null
@@ -374,38 +419,14 @@ game.onUpdate(function () {
 game.onUpdateInterval(500, function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
     for (let value of tanks) {
-        tankAction = false
-        if (value.tileKindAt(TileDirection.Top, myTiles.tile1) || value.tileKindAt(TileDirection.Top, myTiles.tile4)) {
-            tankOrientation(value, "up")
+        randomShoot = tankRandomDecision(value, "shoot")
+        if (randomShoot == "undefined ") {
+            randomOrientation = tankRandomDecision(value, "walk")
+            tankOrientation(value, randomOrientation)
+            tankMove(value, randomOrientation)
+        } else {
+            tankOrientation(value, randomShoot)
             tankShoot(value)
-            tankAction = true
-        } else if (value.tileKindAt(TileDirection.Bottom, myTiles.tile1) || value.tileKindAt(TileDirection.Bottom, myTiles.tile4)) {
-            tankOrientation(value, "down")
-            tankShoot(value)
-            tankAction = true
-        } else if (value.tileKindAt(TileDirection.Left, myTiles.tile1) || value.tileKindAt(TileDirection.Left, myTiles.tile4)) {
-            tankOrientation(value, "left")
-            tankShoot(value)
-            tankAction = true
-        } else if (value.tileKindAt(TileDirection.Right, myTiles.tile1) || value.tileKindAt(TileDirection.Right, myTiles.tile4)) {
-            tankOrientation(value, "right")
-            tankShoot(value)
-            tankAction = true
-        }
-        if (tankAction == false) {
-            if (value.tileKindAt(TileDirection.Top, sprites.castle.tilePath5)) {
-                tankOrientation(value, "up")
-                tankMove(value, "up")
-            } else if (value.tileKindAt(TileDirection.Bottom, sprites.castle.tilePath5)) {
-                tankOrientation(value, "down")
-                tankMove(value, "down")
-            } else if (value.tileKindAt(TileDirection.Left, sprites.castle.tilePath5)) {
-                tankOrientation(value, "left")
-                tankMove(value, "left")
-            } else if (value.tileKindAt(TileDirection.Right, sprites.castle.tilePath5)) {
-                tankOrientation(value, "right")
-                tankMove(value, "right")
-            }
         }
     }
 })
