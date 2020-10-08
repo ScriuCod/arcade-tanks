@@ -291,25 +291,9 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
 })
-function tankRandomOrientation (tank: Sprite) {
-    setOrientationPosibilities = []
-    if (tank.tileKindAt(TileDirection.Top, sprites.castle.tilePath5)) {
-        setOrientationPosibilities.push("up")
-    }
-    if (tank.tileKindAt(TileDirection.Bottom, sprites.castle.tilePath5)) {
-        setOrientationPosibilities.push("down")
-    }
-    if (tank.tileKindAt(TileDirection.Right, sprites.castle.tilePath5)) {
-        setOrientationPosibilities.push("right")
-    }
-    if (tank.tileKindAt(TileDirection.Left, sprites.castle.tilePath5)) {
-        setOrientationPosibilities.push("left")
-    }
-}
 let randomOrientation = ""
 let randomShoot = ""
 let tanks: Sprite[] = []
-let setOrientationPosibilities: string[] = []
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
