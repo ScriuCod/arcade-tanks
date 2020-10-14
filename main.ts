@@ -112,7 +112,7 @@ function tankRandomDecision (tank: Sprite, _type: string) {
         tile_02 = myTiles.tile4
     } else if (_type == "walk") {
         tile_01 = sprites.castle.tilePath5
-        tile_01 = myTiles.tile5
+        tile_02 = myTiles.tile5
     }
     if (tank.tileKindAt(TileDirection.Top, tile_01) || tank.tileKindAt(TileDirection.Top, tile_02)) {
         listPosibilities.push("up")
@@ -126,8 +126,12 @@ function tankRandomDecision (tank: Sprite, _type: string) {
     if (tank.tileKindAt(TileDirection.Right, tile_01) || tank.tileKindAt(TileDirection.Right, tile_02)) {
         listPosibilities.push("right")
     }
-    console.logValue("randomDecision-" + _type + "-" + sprites.readDataNumber(tank, "tankID"), listPosibilities[randint(0, listPosibilities.length - 1)])
-    return listPosibilities[randint(0, listPosibilities.length - 1)]
+    if (listPosibilities.length == 0) {
+        listPosibilities.push("clear")
+    }
+    pickedPossibility = listPosibilities[randint(0, listPosibilities.length - 1)]
+    console.logValue("randomDecision-" + _type + "-" + sprites.readDataNumber(tank, "tankID"), pickedPossibility)
+    return pickedPossibility
 }
 function tankMove (tank: Sprite, orientation: string) {
     if (orientation == "up") {
@@ -301,6 +305,7 @@ let wallLocationLIist: tiles.Location[] = []
 let projectile: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
+let pickedPossibility = ""
 let tile_02: Image = null
 let tile_01: Image = null
 let listPosibilities: string[] = []
@@ -404,10 +409,13 @@ game.onUpdateInterval(500, function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
     for (let value of tanks) {
         randomShoot = tankRandomDecision(value, "shoot")
-        if (randomShoot == "undefined ") {
+        if (randomShoot == "clear") {
             randomOrientation = tankRandomDecision(value, "walk")
             tankOrientation(value, randomOrientation)
             tankMove(value, randomOrientation)
+            if (Math.percentChance(33.3333)) {
+                tankShoot(value)
+            }
         } else {
             tankOrientation(value, randomShoot)
             tankShoot(value)
