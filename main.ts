@@ -174,13 +174,14 @@ function imitLevel (level: number) {
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
-    if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
+    if (sprites.readDataNumber(otherSprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
-        if (sprites.readDataNumber(sprite, "tankID") == 1 && info.player1.life() == 0) {
+        if (sprites.readDataNumber(otherSprite, "tankID") == 1 && info.player1.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
         }
+        sprite.destroy()
     }
 })
 function tankColorise (tank: Sprite, tankID: number) {
@@ -239,6 +240,10 @@ function tankCreate (tank: Sprite, tankID: number) {
     tankOrientation(tank, "up")
     tankChangeLife(tank, 5)
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Projectile, function (sprite, otherSprite) {
+    sprite.destroy()
+    otherSprite.destroy()
+})
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
     tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
@@ -322,18 +327,19 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
-        if (sprites.readDataNumber(sprite, "tankID") == 2 && info.player2.life() == 0) {
+        if (sprites.readDataNumber(otherSprite, "tankID") == 2 && info.player2.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
         }
-        if (sprites.readDataNumber(sprite, "tankID") == 3 && info.player3.life() == 0) {
+        if (sprites.readDataNumber(otherSprite, "tankID") == 3 && info.player3.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
         }
-        if (sprites.readDataNumber(sprite, "tankID") == 4 && info.player4.life() == 0) {
+        if (sprites.readDataNumber(otherSprite, "tankID") == 4 && info.player4.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
         }
+        sprite.destroy()
     }
 })
 let randomOrientation = ""
