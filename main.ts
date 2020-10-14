@@ -5,6 +5,7 @@ namespace SpriteKind {
 function tankChangeActiveMunition (tankID: number, munition: number) {
     if (tankID == 1) {
         sprites.changeDataNumberBy(tank_01, "activeMunition", munition)
+        console.log("changeActiveMunition" + "-" + tankID + "-" + sprites.readDataNumber(tank_01, "activeMunition"))
     } else if (tankID == 2) {
         sprites.changeDataNumberBy(tank_02, "activeMunition", munition)
     } else if (tankID == 3) {
@@ -172,6 +173,16 @@ function imitLevel (level: number) {
         createRandomWalls()
     }
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
+    if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
+        tankChangeLife(otherSprite, -1)
+        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        if (sprites.readDataNumber(sprite, "tankID") == 1 && info.player1.life() == 0) {
+            otherSprite.destroy()
+            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+        }
+    }
+})
 function tankColorise (tank: Sprite, tankID: number) {
     if (tankID == 1) {
         tank.image.replace(1, 4)
@@ -226,6 +237,7 @@ function tankCreate (tank: Sprite, tankID: number) {
     }
     placeTank(tank)
     tankOrientation(tank, "up")
+    tankChangeLife(tank, 5)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -294,6 +306,35 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
 })
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
+})
+function tankChangeLife (tank: Sprite, life: number) {
+    if (sprites.readDataNumber(tank, "tankID") == 1) {
+        info.player1.changeLifeBy(life)
+    } else if (sprites.readDataNumber(tank, "tankID") == 2) {
+        info.player2.changeLifeBy(life)
+    } else if (sprites.readDataNumber(tank, "tankID") == 3) {
+        info.player3.changeLifeBy(life)
+    } else if (sprites.readDataNumber(tank, "tankID") == 4) {
+        info.player4.changeLifeBy(life)
+    }
+}
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
+        tankChangeLife(otherSprite, -1)
+        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        if (sprites.readDataNumber(sprite, "tankID") == 2 && info.player2.life() == 0) {
+            otherSprite.destroy()
+            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+        }
+        if (sprites.readDataNumber(sprite, "tankID") == 3 && info.player3.life() == 0) {
+            otherSprite.destroy()
+            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+        }
+        if (sprites.readDataNumber(sprite, "tankID") == 4 && info.player4.life() == 0) {
+            otherSprite.destroy()
+            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+        }
+    }
 })
 let randomOrientation = ""
 let randomShoot = ""
