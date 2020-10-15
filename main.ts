@@ -5,7 +5,6 @@ namespace SpriteKind {
 function tankChangeActiveMunition (tankID: number, munition: number) {
     if (tankID == 1) {
         sprites.changeDataNumberBy(tank_01, "activeMunition", munition)
-        console.log("changeActiveMunition" + "-" + tankID + "-" + sprites.readDataNumber(tank_01, "activeMunition"))
     } else if (tankID == 2) {
         sprites.changeDataNumberBy(tank_02, "activeMunition", munition)
     } else if (tankID == 3) {
@@ -131,7 +130,6 @@ function tankRandomDecision (tank: Sprite, _type: string) {
         listPosibilities.push("clear")
     }
     pickedPossibility = listPosibilities[randint(0, listPosibilities.length - 1)]
-    console.logValue("randomDecision-" + _type + "-" + sprites.readDataNumber(tank, "tankID"), pickedPossibility)
     return pickedPossibility
 }
 function tankMove (tank: Sprite, orientation: string) {
@@ -177,10 +175,9 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, ot
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
-        tankCheckWinner()
         if (sprites.readDataNumber(otherSprite, "tankID") == 1 && info.player1.life() == 0) {
-            otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            otherSprite.destroy()
         }
         sprite.destroy()
     }
@@ -251,7 +248,7 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherS
     music.baDing.play()
 })
 function tankCheckWinner () {
-    if (sprites.allOfKind(SpriteKind.Player).length - 1 + (sprites.allOfKind(SpriteKind.Enemy).length - 1) == 1) {
+    if (sprites.allOfKind(SpriteKind.Enemy).length == 0) {
         game.over(true, effects.confetti)
     }
 }
@@ -315,8 +312,14 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, othe
     otherSprite.destroy()
     sprite.destroy()
 })
+sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
+    tankCheckWinner()
+})
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
+})
+sprites.onDestroyed(SpriteKind.Player, function (sprite) {
+    game.over(false)
 })
 function tankChangeLife (tank: Sprite, life: number) {
     if (sprites.readDataNumber(tank, "tankID") == 1) {
@@ -333,18 +336,17 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
-        tankCheckWinner()
         if (sprites.readDataNumber(otherSprite, "tankID") == 2 && info.player2.life() == 0) {
-            otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            otherSprite.destroy()
         }
         if (sprites.readDataNumber(otherSprite, "tankID") == 3 && info.player3.life() == 0) {
-            otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            otherSprite.destroy()
         }
         if (sprites.readDataNumber(otherSprite, "tankID") == 4 && info.player4.life() == 0) {
-            otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            otherSprite.destroy()
         }
         sprite.destroy()
     }
