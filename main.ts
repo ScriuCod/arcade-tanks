@@ -469,7 +469,7 @@ game.onUpdateInterval(500, function () {
             randomOrientation = tankRandomDecision(value, "walk")
             tankOrientation(value, randomOrientation)
             tankMove(value, randomOrientation)
-            if (Math.percentChance(45)) {
+            if (Math.percentChance(55)) {
                 tankShoot(value)
             }
         } else {
