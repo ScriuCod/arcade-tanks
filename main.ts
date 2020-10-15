@@ -169,6 +169,28 @@ function imitLevel (level: number) {
             2 2 2 2 2 2 2 2 2 2 
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
         createRandomWalls()
+    } else if (level == 2) {
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000004010101040401010104010401030404030104010101040404040404010101010404040404040101010401030404030104010401010104040101010402020202020202020202`, img`
+            2 2 2 2 2 2 2 2 2 2 
+            2 . . . 2 2 . . . 2 
+            . 2 . . 2 2 . . 2 . 
+            . . 2 2 2 2 2 2 . . 
+            . . 2 2 2 2 2 2 . . 
+            . 2 . . 2 2 . . 2 . 
+            2 . . . 2 2 . . . 2 
+            2 2 2 2 2 2 2 2 2 2 
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+    } else if (level == 3) {
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000001010102010101020104010201020102010201040102010201020102010401020302030203020304010201020102010201040102010101020101010402020202020202020202`, img`
+            2 2 2 2 2 2 2 2 2 2 
+            . . . 2 . . . 2 . 2 
+            . 2 . 2 . 2 . 2 . 2 
+            . 2 . 2 . 2 . 2 . 2 
+            . 2 . 2 . 2 . 2 . 2 
+            . 2 . 2 . 2 . 2 . 2 
+            . 2 . . . 2 . . . 2 
+            2 2 2 2 2 2 2 2 2 2 
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
@@ -372,8 +394,8 @@ let tank_01: Sprite = null
 let projectileSpeed = 0
 let bricksDifficulty = 0
 bricksDifficulty = 30
-projectileSpeed = 80
-imitLevel(1)
+projectileSpeed = 95
+imitLevel(2)
 tank_01 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
@@ -461,7 +483,7 @@ game.onUpdate(function () {
         tankOrientation(tank_01, "right")
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(randint(400, 600), function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
     for (let value of tanks) {
         randomShoot = tankRandomDecision(value, "shoot")
