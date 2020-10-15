@@ -174,9 +174,10 @@ function imitLevel (level: number) {
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
-    if (sprites.readDataNumber(otherSprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
+    if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        tankCheckWinner()
         if (sprites.readDataNumber(otherSprite, "tankID") == 1 && info.player1.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
@@ -249,6 +250,11 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherS
     tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
     music.baDing.play()
 })
+function tankCheckWinner () {
+    if (sprites.allOfKind(SpriteKind.Player).length - 1 + (sprites.allOfKind(SpriteKind.Enemy).length - 1) == 1) {
+        game.over(true, effects.confetti)
+    }
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
     tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
@@ -327,6 +333,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
         tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        tankCheckWinner()
         if (sprites.readDataNumber(otherSprite, "tankID") == 2 && info.player2.life() == 0) {
             otherSprite.destroy()
             tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
@@ -460,7 +467,7 @@ game.onUpdateInterval(500, function () {
             randomOrientation = tankRandomDecision(value, "walk")
             tankOrientation(value, randomOrientation)
             tankMove(value, randomOrientation)
-            if (Math.percentChance(33.3333)) {
+            if (Math.percentChance(45)) {
                 tankShoot(value)
             }
         } else {
