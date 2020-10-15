@@ -395,7 +395,7 @@ let projectileSpeed = 0
 let bricksDifficulty = 0
 bricksDifficulty = 30
 projectileSpeed = 95
-imitLevel(2)
+imitLevel(3)
 tank_01 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
