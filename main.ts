@@ -223,6 +223,68 @@ function placeTank (tank: Sprite) {
     tiles.placeOnTile(tank, randomStartLocation)
     tiles.setTileAt(randomStartLocation, sprites.castle.tilePath5)
 }
+function startNewLevel () {
+    gameLevel += 1
+    imitLevel(gameLevel)
+    tank_02 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . f f f . . . e e . . . f f f . 
+        . f f f f f f e e f f f f d f . 
+        . f d f 1 1 1 e e 1 1 1 f f f . 
+        . f f f 1 1 1 e e 1 1 1 f d f . 
+        . f d f 1 1 2 e e 2 1 1 f f f . 
+        . f f f 1 1 2 e e 2 1 1 f d f . 
+        . f d f 1 1 2 2 2 2 1 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f 1 f 1 f f 1 f 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f f f f f f f f f f f f . 
+        . f f f . . . . . . . . f f f . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    tank_03 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . f f f . . . e e . . . f f f . 
+        . f f f f f f e e f f f f d f . 
+        . f d f 1 1 1 e e 1 1 1 f f f . 
+        . f f f 1 1 1 e e 1 1 1 f d f . 
+        . f d f 1 1 2 e e 2 1 1 f f f . 
+        . f f f 1 1 2 e e 2 1 1 f d f . 
+        . f d f 1 1 2 2 2 2 1 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f 1 f 1 f f 1 f 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f f f f f f f f f f f f . 
+        . f f f . . . . . . . . f f f . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    tank_04 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . . . . . . . e e . . . . . . . 
+        . f f f . . . e e . . . f f f . 
+        . f f f f f f e e f f f f d f . 
+        . f d f 1 1 1 e e 1 1 1 f f f . 
+        . f f f 1 1 1 e e 1 1 1 f d f . 
+        . f d f 1 1 2 e e 2 1 1 f f f . 
+        . f f f 1 1 2 e e 2 1 1 f d f . 
+        . f d f 1 1 2 2 2 2 1 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f 1 f 1 f f 1 f 1 f f f . 
+        . f f f 1 1 1 1 1 1 1 1 f d f . 
+        . f d f f f f f f f f f f f f . 
+        . f f f . . . . . . . . f f f . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    tankCreate(tank_01, 1)
+    tankCreate(tank_02, 2)
+    tankCreate(tank_03, 3)
+    tankCreate(tank_04, 4)
+}
 function tankShoot (tank: Sprite) {
     if (sprites.readDataNumber(tank, "activeMunition") < sprites.readDataNumber(tank, "maxMunition")) {
         music.pewPew.play()
@@ -273,66 +335,10 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherS
 })
 function tankCheckWinner () {
     if (sprites.allOfKind(SpriteKind.Enemy).length == 0) {
-        gameLevel += 1
-        imitLevel(gameLevel)
-        if (true) {
-            tank_02 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . f f f . . . e e . . . f f f . 
-                . f f f f f f e e f f f f d f . 
-                . f d f 1 1 1 e e 1 1 1 f f f . 
-                . f f f 1 1 1 e e 1 1 1 f d f . 
-                . f d f 1 1 2 e e 2 1 1 f f f . 
-                . f f f 1 1 2 e e 2 1 1 f d f . 
-                . f d f 1 1 2 2 2 2 1 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f 1 f 1 f f 1 f 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f f f f f f f f f f f f . 
-                . f f f . . . . . . . . f f f . 
-                . . . . . . . . . . . . . . . . 
-                `, SpriteKind.Enemy)
-            tank_03 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . f f f . . . e e . . . f f f . 
-                . f f f f f f e e f f f f d f . 
-                . f d f 1 1 1 e e 1 1 1 f f f . 
-                . f f f 1 1 1 e e 1 1 1 f d f . 
-                . f d f 1 1 2 e e 2 1 1 f f f . 
-                . f f f 1 1 2 e e 2 1 1 f d f . 
-                . f d f 1 1 2 2 2 2 1 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f 1 f 1 f f 1 f 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f f f f f f f f f f f f . 
-                . f f f . . . . . . . . f f f . 
-                . . . . . . . . . . . . . . . . 
-                `, SpriteKind.Enemy)
-            tank_04 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . . . . . . . e e . . . . . . . 
-                . f f f . . . e e . . . f f f . 
-                . f f f f f f e e f f f f d f . 
-                . f d f 1 1 1 e e 1 1 1 f f f . 
-                . f f f 1 1 1 e e 1 1 1 f d f . 
-                . f d f 1 1 2 e e 2 1 1 f f f . 
-                . f f f 1 1 2 e e 2 1 1 f d f . 
-                . f d f 1 1 2 2 2 2 1 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f 1 f 1 f f 1 f 1 f f f . 
-                . f f f 1 1 1 1 1 1 1 1 f d f . 
-                . f d f f f f f f f f f f f f . 
-                . f f f . . . . . . . . f f f . 
-                . . . . . . . . . . . . . . . . 
-                `, SpriteKind.Enemy)
-            tankCreate(tank_02, 2)
-            tankCreate(tank_03, 3)
-            tankCreate(tank_04, 4)
+        if (gameLevel == gameLevelMax) {
+            game.over(true, effects.confetti)
+        } else {
+            startNewLevel()
         }
     } else if (sprites.allOfKind(SpriteKind.Player).length == 0) {
         game.over(false, effects.confetti)
@@ -455,13 +461,14 @@ let tank_04: Sprite = null
 let tank_03: Sprite = null
 let tank_02: Sprite = null
 let tank_01: Sprite = null
+let gameLevelMax = 0
 let gameLevel = 0
 let projectileSpeed = 0
 let bricksDifficulty = 0
 bricksDifficulty = 30
 projectileSpeed = 95
-gameLevel = 3
-imitLevel(gameLevel)
+gameLevel = 0
+gameLevelMax = 3
 tank_01 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
@@ -480,64 +487,7 @@ tank_01 = sprites.create(img`
     . f f f . . . . . . . . f f f . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
-tank_02 = sprites.create(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . f f f . . . e e . . . f f f . 
-    . f f f f f f e e f f f f d f . 
-    . f d f 1 1 1 e e 1 1 1 f f f . 
-    . f f f 1 1 1 e e 1 1 1 f d f . 
-    . f d f 1 1 2 e e 2 1 1 f f f . 
-    . f f f 1 1 2 e e 2 1 1 f d f . 
-    . f d f 1 1 2 2 2 2 1 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f 1 f 1 f f 1 f 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f f f f f f f f f f f f . 
-    . f f f . . . . . . . . f f f . 
-    . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Enemy)
-tank_03 = sprites.create(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . f f f . . . e e . . . f f f . 
-    . f f f f f f e e f f f f d f . 
-    . f d f 1 1 1 e e 1 1 1 f f f . 
-    . f f f 1 1 1 e e 1 1 1 f d f . 
-    . f d f 1 1 2 e e 2 1 1 f f f . 
-    . f f f 1 1 2 e e 2 1 1 f d f . 
-    . f d f 1 1 2 2 2 2 1 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f 1 f 1 f f 1 f 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f f f f f f f f f f f f . 
-    . f f f . . . . . . . . f f f . 
-    . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Enemy)
-tank_04 = sprites.create(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . . . . . . . e e . . . . . . . 
-    . f f f . . . e e . . . f f f . 
-    . f f f f f f e e f f f f d f . 
-    . f d f 1 1 1 e e 1 1 1 f f f . 
-    . f f f 1 1 1 e e 1 1 1 f d f . 
-    . f d f 1 1 2 e e 2 1 1 f f f . 
-    . f f f 1 1 2 e e 2 1 1 f d f . 
-    . f d f 1 1 2 2 2 2 1 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f 1 f 1 f f 1 f 1 f f f . 
-    . f f f 1 1 1 1 1 1 1 1 f d f . 
-    . f d f f f f f f f f f f f f . 
-    . f f f . . . . . . . . f f f . 
-    . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Enemy)
-tankCreate(tank_01, 1)
-tankCreate(tank_02, 2)
-tankCreate(tank_03, 3)
-tankCreate(tank_04, 4)
+startNewLevel()
 game.onUpdate(function () {
     if (controller.player1.isPressed(ControllerButton.Up)) {
         tankOrientation(tank_01, "up")
