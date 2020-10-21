@@ -191,6 +191,8 @@ function imitLevel (level: number) {
             . 2 . . . 2 . . . 2 
             2 2 2 2 2 2 2 2 2 2 
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+    } else if (level == 4) {
+        tankCheckWinner()
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
@@ -271,7 +273,69 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherS
 })
 function tankCheckWinner () {
     if (sprites.allOfKind(SpriteKind.Enemy).length == 0) {
-        game.over(true, effects.confetti)
+        gameLevel += 1
+        imitLevel(gameLevel)
+        if (true) {
+            tank_02 = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . f f f . . . e e . . . f f f . 
+                . f f f f f f e e f f f f d f . 
+                . f d f 1 1 1 e e 1 1 1 f f f . 
+                . f f f 1 1 1 e e 1 1 1 f d f . 
+                . f d f 1 1 2 e e 2 1 1 f f f . 
+                . f f f 1 1 2 e e 2 1 1 f d f . 
+                . f d f 1 1 2 2 2 2 1 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f 1 f 1 f f 1 f 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f f f f f f f f f f f f . 
+                . f f f . . . . . . . . f f f . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Enemy)
+            tank_03 = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . f f f . . . e e . . . f f f . 
+                . f f f f f f e e f f f f d f . 
+                . f d f 1 1 1 e e 1 1 1 f f f . 
+                . f f f 1 1 1 e e 1 1 1 f d f . 
+                . f d f 1 1 2 e e 2 1 1 f f f . 
+                . f f f 1 1 2 e e 2 1 1 f d f . 
+                . f d f 1 1 2 2 2 2 1 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f 1 f 1 f f 1 f 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f f f f f f f f f f f f . 
+                . f f f . . . . . . . . f f f . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Enemy)
+            tank_04 = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . . . . . . . e e . . . . . . . 
+                . f f f . . . e e . . . f f f . 
+                . f f f f f f e e f f f f d f . 
+                . f d f 1 1 1 e e 1 1 1 f f f . 
+                . f f f 1 1 1 e e 1 1 1 f d f . 
+                . f d f 1 1 2 e e 2 1 1 f f f . 
+                . f f f 1 1 2 e e 2 1 1 f d f . 
+                . f d f 1 1 2 2 2 2 1 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f 1 f 1 f f 1 f 1 f f f . 
+                . f f f 1 1 1 1 1 1 1 1 f d f . 
+                . f d f f f f f f f f f f f f . 
+                . f f f . . . . . . . . f f f . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Enemy)
+            tankCreate(tank_02, 2)
+            tankCreate(tank_03, 3)
+            tankCreate(tank_04, 4)
+        }
+    } else if (sprites.allOfKind(SpriteKind.Player).length == 0) {
+        game.over(false, effects.confetti)
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
@@ -391,11 +455,13 @@ let tank_04: Sprite = null
 let tank_03: Sprite = null
 let tank_02: Sprite = null
 let tank_01: Sprite = null
+let gameLevel = 0
 let projectileSpeed = 0
 let bricksDifficulty = 0
 bricksDifficulty = 30
 projectileSpeed = 95
-imitLevel(3)
+gameLevel = 3
+imitLevel(gameLevel)
 tank_01 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . e e . . . . . . . 
