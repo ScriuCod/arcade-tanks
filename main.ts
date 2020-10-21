@@ -145,6 +145,7 @@ function tankMove (tank: Sprite, orientation: string) {
 }
 function imitLevel (level: number) {
     scene.setBackgroundColor(7)
+    music.powerUp.playUntilDone()
     if (level == 0) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000202020202020202020203010101010101010103010101010101010101010101010101010101010101010101010101010101010101010101010101010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
@@ -322,7 +323,7 @@ function tankCreate (tank: Sprite, tankID: number) {
     }
     placeTank(tank)
     tankOrientation(tank, "up")
-    tankChangeLife(tank, 5)
+    tankChangeLife(tank, 0)
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprite.destroy()
@@ -336,8 +337,10 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherS
 function tankCheckWinner () {
     if (sprites.allOfKind(SpriteKind.Enemy).length == 0) {
         if (gameLevel == gameLevelMax) {
+            game.showLongText("Finally you won, \"took you long enough\" :-)", DialogLayout.Bottom)
             game.over(true, effects.confetti)
         } else {
+            info.player1.changeLifeBy(1)
             startNewLevel()
         }
     } else if (sprites.allOfKind(SpriteKind.Player).length == 0) {
