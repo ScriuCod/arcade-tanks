@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const Wall = SpriteKind.create()
     export const Present = SpriteKind.create()
+    export const Bomb = SpriteKind.create()
 }
 function tankChangeActiveMunition (tankID: number, munition: number) {
     if (tankID == 1) {
@@ -105,6 +106,11 @@ function tankChangeScore (tankID: number, score: number) {
         info.player4.changeScoreBy(score)
     }
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (sprites.allOfKind(SpriteKind.Bomb).length <= BombMax) {
+        createBomb()
+    }
+})
 function tankRandomDecision (tank: Sprite, _type: string) {
     listPosibilities = []
     if (_type == "shoot") {
@@ -144,8 +150,7 @@ function tankMove (tank: Sprite, orientation: string) {
     }
 }
 function imitLevel (level: number) {
-    scene.setBackgroundColor(7)
-    music.powerUp.playUntilDone()
+    scene.setBackgroundColor(13)
     if (level == 0) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000202020202020202020203010101010101010103010101010101010101010101010101010101010101010101010101010101010101010101010101010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
@@ -159,7 +164,7 @@ function imitLevel (level: number) {
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3], TileScale.Sixteen))
         createRandomWalls()
     } else if (level == 1) {
-        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000003010101010101010103010201020101020102010101010104040101010101010101040401010101010201020101020102010301010101010101010302020202020202020202`, img`
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000202020202020202020203010101010101010103010201020101020102010101010104040101010101010101040401010101010201020101020102010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
             . . . . . . . . . . 
             . 2 . 2 . . 2 . 2 . 
@@ -171,16 +176,17 @@ function imitLevel (level: number) {
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
         createRandomWalls()
     } else if (level == 2) {
-        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000004010101040401010104010401030404030104010101040404040404010101010404040404040101010401030404030104010401010104040101010402020202020202020202`, img`
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000001010101010101010101010401030404030104010101040404040404010101010404040404040101010401030404030104010101010101010101010102020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
-            2 . . . 2 2 . . . 2 
+            . . . . . . . . . . 
             . 2 . . 2 2 . . 2 . 
             . . 2 2 2 2 2 2 . . 
             . . 2 2 2 2 2 2 . . 
             . 2 . . 2 2 . . 2 . 
-            2 . . . 2 2 . . . 2 
+            . . . . . . . . . . 
             2 2 2 2 2 2 2 2 2 2 
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+        createRandomWalls()
     } else if (level == 3) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000001010102010101020104010201020102010201040102010201020102010401020302030203020304010201020102010201040102010101020101010402020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
@@ -193,6 +199,18 @@ function imitLevel (level: number) {
             2 2 2 2 2 2 2 2 2 2 
             `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
     } else if (level == 4) {
+        tiles.setTilemap(tiles.createTilemap(hex`0a0008000000000000000000000003010202020202020103020104040404040401020201010101010101010202010101010101010102020104040404040401020301020202020202010302020202020202020202`, img`
+            2 2 2 2 2 2 2 2 2 2 
+            . . 2 2 2 2 2 2 . . 
+            2 . . . . . . . . 2 
+            2 . . . . . . . . 2 
+            2 . . . . . . . . 2 
+            2 . . . . . . . . 2 
+            . . 2 2 2 2 2 2 . . 
+            2 2 2 2 2 2 2 2 2 2 
+            `, [myTiles.transparency16,sprites.castle.tilePath5,sprites.dungeon.floorLight0,myTiles.tile3,myTiles.tile4], TileScale.Sixteen))
+        createRandomWalls()
+    } else if (level == 5) {
         tankCheckWinner()
     }
 }
@@ -285,6 +303,7 @@ function startNewLevel () {
     tankCreate(tank_02, 2)
     tankCreate(tank_03, 3)
     tankCreate(tank_04, 4)
+    music.powerUp.playUntilDone()
 }
 function tankShoot (tank: Sprite) {
     if (sprites.readDataNumber(tank, "activeMunition") < sprites.readDataNumber(tank, "maxMunition")) {
@@ -310,6 +329,21 @@ function tankShoot (tank: Sprite) {
         }
     }
 }
+info.onCountdownEnd(function () {
+    for (let value of sprites.allOfKind(SpriteKind.Bomb)) {
+        scene.cameraShake(4, 500)
+        if (value.tileKindAt(TileDirection.Top, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Top, myTiles.tile1)) {
+            tiles.setTileAt(tiles.getTileLocation(value.x / 16, value.y / 16 - 1), sprites.castle.tilePath5)
+            tiles.setWallAt(tiles.getTileLocation(value.x / 16, value.y / 16 - 1), false)
+            console.log("Explode Top")
+        }
+        if (value.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Bottom, myTiles.tile1)) {
+            tiles.setTileAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), sprites.castle.tilePath5)
+            tiles.setWallAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), false)
+            console.log("Explode Bottom")
+        }
+    }
+})
 function tankCreate (tank: Sprite, tankID: number) {
     tank.setFlag(SpriteFlag.ShowPhysics, false)
     tank.setFlag(SpriteFlag.StayInScreen, true)
@@ -323,7 +357,7 @@ function tankCreate (tank: Sprite, tankID: number) {
     }
     placeTank(tank)
     tankOrientation(tank, "up")
-    tankChangeLife(tank, 0)
+    tankChangeLife(tank, 2)
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprite.destroy()
@@ -403,6 +437,28 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
 sprites.onCreated(SpriteKind.Projectile, function (sprite) {
     tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), 1)
 })
+function createBomb () {
+    mySprite = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . 5 5 . . . . . . . . 
+        . . . . . . 5 f . . . . . . . . 
+        . . . . . . . . f . . . . . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . . . f f f f f . . . . . 
+        . . . . . f f f f f f f . . . . 
+        . . . . f f f f f f f f f . . . 
+        . . . . f f f f f f f f f . . . 
+        . . . . f f f f f f f f f . . . 
+        . . . . . f f f f f f f . . . . 
+        . . . . . . f f f f f . . . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Bomb)
+    mySprite.setPosition(tank_01.x, tank_01.y)
+    info.startCountdown(5)
+}
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Wall, function (sprite, otherSprite) {
     otherSprite.destroy()
     sprite.destroy()
@@ -449,6 +505,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
 let randomOrientation = ""
 let randomShoot = ""
 let tanks: Sprite[] = []
+let mySprite: Sprite = null
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
@@ -463,6 +520,7 @@ let listPosibilities: string[] = []
 let tank_04: Sprite = null
 let tank_03: Sprite = null
 let tank_02: Sprite = null
+let BombMax = 0
 let tank_01: Sprite = null
 let gameLevelMax = 0
 let gameLevel = 0
@@ -490,6 +548,7 @@ tank_01 = sprites.create(img`
     . f f f . . . . . . . . f f f . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
+BombMax = 1
 startNewLevel()
 game.onUpdate(function () {
     if (controller.player1.isPressed(ControllerButton.Up)) {
