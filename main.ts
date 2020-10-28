@@ -107,7 +107,7 @@ function tankChangeScore (tankID: number, score: number) {
     }
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprites.allOfKind(SpriteKind.Bomb).length <= BombMax) {
+    if (sprites.allOfKind(SpriteKind.Bomb).length < BombMax) {
         createBomb()
     }
 })
@@ -331,6 +331,7 @@ function tankShoot (tank: Sprite) {
 }
 info.onCountdownEnd(function () {
     for (let value of sprites.allOfKind(SpriteKind.Bomb)) {
+        value.destroy(effects.fire, 500)
         scene.cameraShake(4, 500)
         if (value.tileKindAt(TileDirection.Top, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Top, myTiles.tile1)) {
             tiles.setTileAt(tiles.getTileLocation(value.x / 16, value.y / 16 - 1), sprites.castle.tilePath5)
@@ -341,6 +342,16 @@ info.onCountdownEnd(function () {
             tiles.setTileAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), sprites.castle.tilePath5)
             tiles.setWallAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), false)
             console.log("Explode Bottom")
+        }
+        if (value.tileKindAt(TileDirection.Right, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Right, myTiles.tile1)) {
+            tiles.setTileAt(tiles.getTileLocation(value.x / 16 + 1, value.y / 16 + 0), sprites.castle.tilePath5)
+            tiles.setWallAt(tiles.getTileLocation(value.x / 16 + 1, value.y / 16 + 0), false)
+            console.log("Explode right")
+        }
+        if (value.tileKindAt(TileDirection.Left, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Left, myTiles.tile1)) {
+            tiles.setTileAt(tiles.getTileLocation(value.x / 16 - 1, value.y / 16 + 0), sprites.castle.tilePath5)
+            tiles.setWallAt(tiles.getTileLocation(value.x / 16 - 1, value.y / 16 + 0), false)
+            console.log("Explode left")
         }
     }
 })
@@ -563,18 +574,18 @@ game.onUpdate(function () {
 })
 game.onUpdateInterval(randint(400, 600), function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
-    for (let value of tanks) {
-        randomShoot = tankRandomDecision(value, "shoot")
+    for (let value2 of tanks) {
+        randomShoot = tankRandomDecision(value2, "shoot")
         if (randomShoot == "clear") {
-            randomOrientation = tankRandomDecision(value, "walk")
-            tankOrientation(value, randomOrientation)
-            tankMove(value, randomOrientation)
+            randomOrientation = tankRandomDecision(value2, "walk")
+            tankOrientation(value2, randomOrientation)
+            tankMove(value2, randomOrientation)
             if (Math.percentChance(55)) {
-                tankShoot(value)
+                tankShoot(value2)
             }
         } else {
-            tankOrientation(value, randomShoot)
-            tankShoot(value)
+            tankOrientation(value2, randomShoot)
+            tankShoot(value2)
         }
     }
 })
