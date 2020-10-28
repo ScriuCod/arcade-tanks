@@ -2,6 +2,7 @@ namespace SpriteKind {
     export const Wall = SpriteKind.create()
     export const Present = SpriteKind.create()
     export const Bomb = SpriteKind.create()
+    export const Explosion = SpriteKind.create()
 }
 function tankChangeActiveMunition (tankID: number, munition: number) {
     if (tankID == 1) {
@@ -334,25 +335,104 @@ info.onCountdownEnd(function () {
         value.destroy(effects.fire, 500)
         scene.cameraShake(4, 500)
         if (value.tileKindAt(TileDirection.Top, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Top, myTiles.tile1)) {
-            tiles.setTileAt(tiles.getTileLocation(value.x / 16, value.y / 16 - 1), sprites.castle.tilePath5)
-            tiles.setWallAt(tiles.getTileLocation(value.x / 16, value.y / 16 - 1), false)
-            console.log("Explode Top")
+            tmpLocation = tiles.getTileLocation(value.x / 16, value.y / 16 - 1)
+            sprExplosion = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Explosion)
+            tiles.placeOnTile(sprExplosion, tmpLocation)
+            tiles.setTileAt(tmpLocation, sprites.castle.tilePath5)
+            tiles.setWallAt(tmpLocation, false)
         }
         if (value.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Bottom, myTiles.tile1)) {
-            tiles.setTileAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), sprites.castle.tilePath5)
-            tiles.setWallAt(tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1), false)
-            console.log("Explode Bottom")
+            tmpLocation = tiles.getTileLocation(value.x / 16 - 0, value.y / 16 + 1)
+            sprExplosion = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Explosion)
+            tiles.placeOnTile(sprExplosion, tmpLocation)
+            tiles.setTileAt(tmpLocation, sprites.castle.tilePath5)
+            tiles.setWallAt(tmpLocation, false)
         }
         if (value.tileKindAt(TileDirection.Right, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Right, myTiles.tile1)) {
-            tiles.setTileAt(tiles.getTileLocation(value.x / 16 + 1, value.y / 16 + 0), sprites.castle.tilePath5)
-            tiles.setWallAt(tiles.getTileLocation(value.x / 16 + 1, value.y / 16 + 0), false)
-            console.log("Explode right")
+            tmpLocation = tiles.getTileLocation(value.x / 16 + 1, value.y / 16 + 0)
+            sprExplosion = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Explosion)
+            tiles.placeOnTile(sprExplosion, tmpLocation)
+            tiles.setTileAt(tmpLocation, sprites.castle.tilePath5)
+            tiles.setWallAt(tmpLocation, false)
         }
         if (value.tileKindAt(TileDirection.Left, sprites.dungeon.floorLight0) || value.tileKindAt(TileDirection.Left, myTiles.tile1)) {
-            tiles.setTileAt(tiles.getTileLocation(value.x / 16 - 1, value.y / 16 + 0), sprites.castle.tilePath5)
-            tiles.setWallAt(tiles.getTileLocation(value.x / 16 - 1, value.y / 16 + 0), false)
-            console.log("Explode left")
+            tmpLocation = tiles.getTileLocation(value.x / 16 - 1, value.y / 16 + 0)
+            sprExplosion = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Explosion)
+            tiles.placeOnTile(sprExplosion, tmpLocation)
+            tiles.setTileAt(tmpLocation, sprites.castle.tilePath5)
+            tiles.setWallAt(tmpLocation, false)
         }
+    }
+    for (let value of sprites.allOfKind(SpriteKind.Explosion)) {
+        value.destroy(effects.fire, 250)
     }
 })
 function tankCreate (tank: Sprite, tankID: number) {
@@ -521,6 +601,8 @@ let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
 let wallLocationLIist: tiles.Location[] = []
+let sprExplosion: Sprite = null
+let tmpLocation: tiles.Location = null
 let projectile: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
