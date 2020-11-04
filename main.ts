@@ -4,16 +4,8 @@ namespace SpriteKind {
     export const Bomb = SpriteKind.create()
     export const Explosion = SpriteKind.create()
 }
-function tankChangeActiveMunition (tankID: number, munition: number) {
-    if (tankID == 1) {
-        sprites.changeDataNumberBy(tank_01, "activeMunition", munition)
-    } else if (tankID == 2) {
-        sprites.changeDataNumberBy(tank_02, "activeMunition", munition)
-    } else if (tankID == 3) {
-        sprites.changeDataNumberBy(tank_03, "activeMunition", munition)
-    } else if (tankID == 4) {
-        sprites.changeDataNumberBy(tank_04, "activeMunition", munition)
-    }
+function tankChangeActiveMunition (tank: Sprite, munition: number) {
+    sprites.changeDataNumberBy(tank, "activeMunition", munition)
 }
 function tankOrientation (tank: Sprite, orientation: string) {
     if (orientation == "up") {
@@ -527,7 +519,7 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     sprite.destroy()
 })
 sprites.onCreated(SpriteKind.Projectile, function (sprite) {
-    tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), 1)
+    tankChangeActiveMunition(sprite, 0)
 })
 function createBomb () {
     mySprite = sprites.create(img`
@@ -559,7 +551,7 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     tankCheckWinner()
 })
 sprites.onDestroyed(SpriteKind.Projectile, function (sprite) {
-    tankChangeActiveMunition(sprites.readDataNumber(sprite, "tankID"), -1)
+    tankChangeActiveMunition(sprite, 0)
 })
 sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     game.over(false)
@@ -606,6 +598,9 @@ let wallLocationLIist: tiles.Location[] = []
 let sprExplosion: Sprite = null
 let tmpLocation: tiles.Location = null
 let projectile: Sprite = null
+let tank_04: Sprite = null
+let tank_03: Sprite = null
+let tank_02: Sprite = null
 let randomStartLocation: tiles.Location = null
 let startLocations: tiles.Location[] = []
 let pickedPossibility = ""
@@ -613,9 +608,6 @@ let tile_02: Image = null
 let tile_01: Image = null
 let listPosibilities: string[] = []
 let tankID = 0
-let tank_04: Sprite = null
-let tank_03: Sprite = null
-let tank_02: Sprite = null
 let BombMax = 0
 let tank_01: Sprite = null
 let gameLevelMax = 0
