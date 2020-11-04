@@ -96,7 +96,8 @@ function tankOrientation (tank: Sprite, orientation: string) {
     sprites.setDataString(tank, "orientation", orientation)
     tankColorise(tank, sprites.readDataNumber(tank, "tankID"))
 }
-function tankChangeScore (tankID: number, score: number) {
+function tankChangeScore (tank: Sprite, score: number) {
+    tankID = sprites.readDataNumber(tank, "tankID")
     if (tankID == 1) {
         info.player1.changeScoreBy(score)
     } else if (tankID == 2) {
@@ -218,9 +219,9 @@ function imitLevel (level: number) {
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, otherSprite) {
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
-        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        tankChangeScore(sprite, 15)
         if (sprites.readDataNumber(otherSprite, "tankID") == 1 && info.player1.life() == 0) {
-            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            tankChangeScore(sprite, 10)
             otherSprite.destroy()
         }
         sprite.destroy()
@@ -455,8 +456,8 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Projectile, function (sprite
     otherSprite.destroy()
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Present, function (sprite, otherSprite) {
-    otherSprite.destroy()
-    tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
+    sprite.destroy()
+    tankChangeScore(sprite, 75)
     music.baDing.play()
 })
 function tankCheckWinner () {
@@ -474,7 +475,7 @@ function tankCheckWinner () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
     otherSprite.destroy()
-    tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 75)
+    tankChangeScore(sprite, 75)
     music.baDing.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
@@ -492,11 +493,11 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (tiles.tileAtLocationEquals(location, myTiles.tile1)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 5)
+        tankChangeScore(sprite, 5)
     } else if (tiles.tileAtLocationEquals(location, myTiles.tile4)) {
         tiles.setWallAt(location, false)
         tiles.setTileAt(location, sprites.castle.tilePath5)
-        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 25)
+        tankChangeScore(sprite, 5)
         randomPresent = randint(1, 3)
         if (randomPresent == 1) {
             tiles.setTileAt(location, sprites.dungeon.floorLight0)
@@ -564,30 +565,31 @@ sprites.onDestroyed(SpriteKind.Player, function (sprite) {
     game.over(false)
 })
 function tankChangeLife (tank: Sprite, life: number) {
-    if (sprites.readDataNumber(tank, "tankID") == 1) {
+    tankID = sprites.readDataNumber(tank, "tankID")
+    if (tankID == 1) {
         info.player1.changeLifeBy(life)
-    } else if (sprites.readDataNumber(tank, "tankID") == 2) {
+    } else if (tankID == 2) {
         info.player2.changeLifeBy(life)
-    } else if (sprites.readDataNumber(tank, "tankID") == 3) {
+    } else if (tankID == 3) {
         info.player3.changeLifeBy(life)
-    } else if (sprites.readDataNumber(tank, "tankID") == 4) {
+    } else if (tankID == 4) {
         info.player4.changeLifeBy(life)
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (sprites.readDataNumber(sprite, "tankID") != sprites.readDataNumber(otherSprite, "tankID")) {
         tankChangeLife(otherSprite, -1)
-        tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 40)
+        tankChangeScore(sprite, 15)
         if (sprites.readDataNumber(otherSprite, "tankID") == 2 && info.player2.life() == 0) {
-            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            tankChangeScore(sprite, 15)
             otherSprite.destroy()
         }
         if (sprites.readDataNumber(otherSprite, "tankID") == 3 && info.player3.life() == 0) {
-            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            tankChangeScore(sprite, 15)
             otherSprite.destroy()
         }
         if (sprites.readDataNumber(otherSprite, "tankID") == 4 && info.player4.life() == 0) {
-            tankChangeScore(sprites.readDataNumber(sprite, "tankID"), 10)
+            tankChangeScore(sprite, 15)
             otherSprite.destroy()
         }
         sprite.destroy()
@@ -610,6 +612,7 @@ let pickedPossibility = ""
 let tile_02: Image = null
 let tile_01: Image = null
 let listPosibilities: string[] = []
+let tankID = 0
 let tank_04: Sprite = null
 let tank_03: Sprite = null
 let tank_02: Sprite = null
