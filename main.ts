@@ -219,11 +219,11 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Player, function (sprite, ot
 function tankColorise (tank: Sprite) {
     tankID = sprites.readDataNumber(tank, "tankID")
     if (tankID == 1) {
-        tank.image.replace(1, 4)
-    } else if (tankID == 2) {
         tank.image.replace(1, 2)
+    } else if (tankID == 2) {
+        tank.image.replace(1, 8)
     } else if (tankID == 3) {
-        tank.image.replace(1, 9)
+        tank.image.replace(1, 4)
     } else if (tankID == 4) {
         tank.image.replace(1, 7)
     }
@@ -422,8 +422,8 @@ info.onCountdownEnd(function () {
             tiles.setWallAt(tmpLocation, false)
         }
     }
-    for (let value of sprites.allOfKind(SpriteKind.Explosion)) {
-        value.destroy(effects.fire, 250)
+    for (let value2 of sprites.allOfKind(SpriteKind.Explosion)) {
+        value2.destroy(effects.fire, 250)
     }
 })
 function tankCreate (tank: Sprite, tankID: number) {
@@ -612,6 +612,23 @@ let gameLevelMax = 0
 let gameLevel = 0
 let projectileSpeed = 0
 let bricksDifficulty = 0
+let mySprite2 = sprites.create(img`
+    . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . 
+    . . . . . . e . e . . . . . . 
+    . . . . . . e f e . . . . . . 
+    . . . . f f e f e f f . . . . 
+    . . . . f 2 2 f 2 2 f . . . . 
+    . . e e e 2 4 f 4 2 e e e . . 
+    . . . f f f f f f f f f . . . 
+    . . e e e 2 4 f 4 2 e e e . . 
+    . . . . f 2 2 f 2 2 f . . . . 
+    . . . . f f e f e f f . . . . 
+    . . . . . . e f e . . . . . . 
+    . . . . . . e . e . . . . . . 
+    . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
 bricksDifficulty = 30
 projectileSpeed = 95
 gameLevel = 0
@@ -649,18 +666,18 @@ game.onUpdate(function () {
 })
 game.onUpdateInterval(randint(400, 600), function () {
     tanks = sprites.allOfKind(SpriteKind.Enemy)
-    for (let value2 of tanks) {
-        randomShoot = tankRandomDecision(value2, "shoot")
+    for (let value22 of tanks) {
+        randomShoot = tankRandomDecision(value22, "shoot")
         if (randomShoot == "clear") {
-            randomOrientation = tankRandomDecision(value2, "walk")
-            tankOrientation(value2, randomOrientation)
-            tankMove(value2, randomOrientation)
+            randomOrientation = tankRandomDecision(value22, "walk")
+            tankOrientation(value22, randomOrientation)
+            tankMove(value22, randomOrientation)
             if (Math.percentChance(55)) {
-                tankShoot(value2)
+                tankShoot(value22)
             }
         } else {
-            tankOrientation(value2, randomShoot)
-            tankShoot(value2)
+            tankOrientation(value22, randomShoot)
+            tankShoot(value22)
         }
     }
 })
