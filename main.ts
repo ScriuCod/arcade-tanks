@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const Present = SpriteKind.create()
     export const Bomb = SpriteKind.create()
     export const Explosion = SpriteKind.create()
+    export const Sentinel = SpriteKind.create()
 }
 function tankOrientation (tank: Sprite, orientation: string) {
     if (orientation == "up") {
@@ -99,8 +100,9 @@ function tankChangeScore (tank: Sprite, score: number) {
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (sprites.allOfKind(SpriteKind.Bomb).length < BombMax) {
-        createBomb()
+    	
     }
+    sentinelCreate(tank_01)
 })
 function tankRandomDecision (tank: Sprite, _type: string) {
     listPosibilities = []
@@ -468,6 +470,35 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, other
     tankChangeScore(sprite, 75)
     music.baDing.play()
 })
+function sentinelShoot (sentinel: Sprite) {
+    projectile = sprites.create(img`
+        2 f 
+        f 2 
+        `, SpriteKind.Projectile)
+    projectile.setPosition(sentinel.x, sentinel.y)
+    sprites.setDataNumber(projectile, "tankID", sprites.readDataNumber(sentinel, "tankID"))
+    if (sprites.readDataString(sentinel, "orientation") == "up") {
+        projectile.setPosition(sentinel.x, sentinel.y - 7)
+        projectile.setVelocity(0, projectileSpeed * -1)
+        sprites.setDataString(sentinel, "orientation", "right")
+    } else if (sprites.readDataString(sentinel, "orientation") == "down") {
+        projectile.y += 5
+        projectile.setVelocity(0, projectileSpeed)
+        sprites.setDataString(sentinel, "orientation", "left")
+    } else if (sprites.readDataString(sentinel, "orientation") == "right") {
+        projectile.x += 5
+        projectile.setVelocity(projectileSpeed, 0)
+        sprites.setDataString(sentinel, "orientation", "down")
+    } else if (sprites.readDataString(sentinel, "orientation") == "left") {
+        projectile.x += -5
+        projectile.setVelocity(projectileSpeed * -1, 0)
+        sprites.setDataString(sentinel, "orientation", "up")
+    }
+    sprites.changeDataNumberBy(sentinel, "munition", -1)
+    if (sprites.readDataNumber(sentinel, "munition") == 0) {
+        sentinel.destroy()
+    }
+}
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
     tankShoot(tank_01)
 })
@@ -519,6 +550,29 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
 sprites.onCreated(SpriteKind.Projectile, function (sprite) {
     sprites.changeDataNumberBy(sprite, "activeMunition", 1)
 })
+function sentinelCreate (tank: Sprite) {
+    sprSentinel = sprites.create(img`
+        . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . 
+        . . . . . . e . e . . . . . . 
+        . . . . . . e f e . . . . . . 
+        . . . . f f e f e f f . . . . 
+        . . . . f 2 2 f 2 2 f . . . . 
+        . . e e e 2 4 f 4 2 e e e . . 
+        . . . f f f f f f f f f . . . 
+        . . e e e 2 4 f 4 2 e e e . . 
+        . . . . f 2 2 f 2 2 f . . . . 
+        . . . . f f e f e f f . . . . 
+        . . . . . . e f e . . . . . . 
+        . . . . . . e . e . . . . . . 
+        . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . 
+        `, SpriteKind.Sentinel)
+    sprSentinel.setPosition(tank.x, tank.y)
+    sprites.setDataNumber(sprSentinel, "munition", 50)
+    sprites.setDataString(sprSentinel, "orientation", "up")
+    sprites.setDataNumber(sprSentinel, "tankID", sprites.readDataNumber(tank, "tankID"))
+}
 function createBomb () {
     mySprite = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -589,6 +643,7 @@ let randomOrientation = ""
 let randomShoot = ""
 let tanks: Sprite[] = []
 let mySprite: Sprite = null
+let sprSentinel: Sprite = null
 let sprPresent: Sprite = null
 let randomPresent = 0
 let randomLocation: tiles.Location = null
@@ -612,23 +667,6 @@ let gameLevelMax = 0
 let gameLevel = 0
 let projectileSpeed = 0
 let bricksDifficulty = 0
-let mySprite2 = sprites.create(img`
-    . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . 
-    . . . . . . e . e . . . . . . 
-    . . . . . . e f e . . . . . . 
-    . . . . f f e f e f f . . . . 
-    . . . . f 2 2 f 2 2 f . . . . 
-    . . e e e 2 4 f 4 2 e e e . . 
-    . . . f f f f f f f f f . . . 
-    . . e e e 2 4 f 4 2 e e e . . 
-    . . . . f 2 2 f 2 2 f . . . . 
-    . . . . f f e f e f f . . . . 
-    . . . . . . e f e . . . . . . 
-    . . . . . . e . e . . . . . . 
-    . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . 
-    `, SpriteKind.Player)
 bricksDifficulty = 30
 projectileSpeed = 95
 gameLevel = 0
@@ -679,5 +717,10 @@ game.onUpdateInterval(randint(400, 600), function () {
             tankOrientation(value22, randomShoot)
             tankShoot(value22)
         }
+    }
+})
+game.onUpdateInterval(150, function () {
+    for (let value of sprites.allOfKind(SpriteKind.Sentinel)) {
+        sentinelShoot(value)
     }
 })
