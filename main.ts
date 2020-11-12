@@ -144,6 +144,12 @@ function tankMove (tank: Sprite, orientation: string) {
 }
 function imitLevel (level: number) {
     scene.setBackgroundColor(13)
+    for (let value of sprites.allOfKind(SpriteKind.Sentinel)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.Present)) {
+        value.destroy()
+    }
     if (level == 0) {
         tiles.setTilemap(tiles.createTilemap(hex`0a0008000202020202020202020203010101010101010103010101010101010101010101010101010101010101010101010101010101010101010101010101010301010101010101010302020202020202020202`, img`
             2 2 2 2 2 2 2 2 2 2 
@@ -431,6 +437,8 @@ info.onCountdownEnd(function () {
 function tankCreate (tank: Sprite, tankID: number) {
     tank.setFlag(SpriteFlag.ShowPhysics, false)
     tank.setFlag(SpriteFlag.StayInScreen, true)
+    sprites.setDataBoolean(tank, "ignoreColor", false)
+    sprites.setDataBoolean(tank, "controlsReverse", false)
     sprites.setDataNumber(tank, "speed", 45)
     sprites.setDataNumber(tank, "tankID", tankID)
     sprites.setDataNumber(tank, "maxMunition", 3)
@@ -465,11 +473,6 @@ function tankCheckWinner () {
         game.over(false, effects.confetti)
     }
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Present, function (sprite, otherSprite) {
-    otherSprite.destroy()
-    tankChangeScore(sprite, 75)
-    music.baDing.play()
-})
 function sentinelShoot (sentinel: Sprite) {
     projectile = sprites.create(img`
         2 f 
@@ -517,13 +520,122 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
         tankChangeScore(sprite, 5)
     } else if (tiles.tileAtLocationEquals(location, myTiles.tile4)) {
         tiles.setWallAt(location, false)
-        tiles.setTileAt(location, sprites.castle.tilePath5)
-        tankChangeScore(sprite, 5)
-        randomPresent = randint(1, 3)
-        if (randomPresent == 1) {
-            tiles.setTileAt(location, sprites.dungeon.floorLight0)
-            tiles.setWallAt(location, true)
-        } else if (randomPresent == 2) {
+        if (Math.percentChance(2)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 f f 7 f 7 7 f 7 7 b 
+                1 7 7 5 7 7 7 f 7 f 7 f 7 7 7 b 
+                1 7 5 5 5 7 7 f 7 f f 7 7 7 7 b 
+                1 7 7 5 7 7 7 f 7 f 7 f 7 7 7 b 
+                1 7 7 7 7 7 7 f 7 f 7 7 f 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                1 7 7 7 7 7 7 7 7 7 7 7 7 7 7 b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+            tankChangeScore(sprite, 1000)
+        } else if (Math.percentChance(10)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d f f d d d d d d b 
+                1 d d d d d d f f d d d d d d b 
+                1 d d d d f f f f f f d d d d b 
+                1 d d d d f 2 2 2 2 f d d d d b 
+                1 d d f f f 2 2 2 2 f f f d d b 
+                1 d d f f f 2 2 2 2 f f f d d b 
+                1 d d d d f 2 2 2 2 f d d d d b 
+                1 d d d d f f f f f f d d d d b 
+                1 d d d d d d f f d d d d d d b 
+                1 d d d d d d f f d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+        } else if (Math.percentChance(10)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 f f 4 4 f f f f 4 b 
+                1 4 4 4 4 f 4 4 f 4 f 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 f 4 4 f f 4 4 b 
+                1 4 5 5 5 4 4 f 4 4 4 4 4 f 4 b 
+                1 4 4 4 4 4 f 4 4 4 f 4 4 f 4 b 
+                1 4 4 4 4 f f f f 4 4 f f 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+        } else if (Math.percentChance(10)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d 2 2 2 d d d 2 2 2 d d d b 
+                1 d 2 2 2 2 2 d 2 2 2 2 2 d d b 
+                1 d 2 2 5 2 2 2 2 2 2 2 2 d d b 
+                1 d d 2 5 2 2 2 2 2 2 2 d d d b 
+                1 d 5 5 5 5 5 2 2 2 2 d d d d b 
+                1 d d d 5 2 2 2 2 2 d d d d d b 
+                1 d d d 5 d 2 2 2 d d d d d d b 
+                1 d d d d d d 2 d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+        } else if (Math.percentChance(10)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 f 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 f f 4 4 b 
+                1 4 4 4 f 4 f f f f f f f f 4 b 
+                1 4 4 f f 4 4 4 4 4 4 f f 4 4 b 
+                1 4 f f f f f f f 4 4 f 4 4 4 b 
+                1 4 4 f f 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 f 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+        } else if (Math.percentChance(10)) {
+            sprPresent = sprites.create(img`
+                . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
+                1 d d d d d d d d d d d d d d b 
+                1 d d d d d d d 2 5 d d d d d b 
+                1 d d d d d d d f 2 d d d d d b 
+                1 d d d d d d f d d d d d d d b 
+                1 d d d d d d f d d d d d d d b 
+                1 d d d d f f f f f f d d d d b 
+                1 d d d f f 1 1 1 f f f d d d b 
+                1 d d d f f 1 f f 1 f f d d d b 
+                1 d d d f f 1 1 1 f f f d d d b 
+                1 d d d f f 1 f f 1 f f d d d b 
+                1 d d d f f 1 1 1 f f f d d d b 
+                1 d d d f f f f f f f f d d d b 
+                1 d d d d f f f f f f d d d d b 
+                1 d d d d d d d d d d d d d d b 
+                b b b b b b b b b b b b b b b . 
+                `, SpriteKind.Present)
+        } else if (Math.percentChance(40)) {
             sprPresent = sprites.create(img`
                 . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 b 
                 1 d d d d d d d d d d d d d d b 
@@ -542,8 +654,13 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
                 1 d d d d d d d d d d d d d d b 
                 b b b b b b b b b b b b b b b . 
                 `, SpriteKind.Present)
-            tiles.placeOnTile(sprPresent, location)
+            tankChangeScore(sprite, 75)
+        } else {
+            tiles.setTileAt(location, sprites.dungeon.floorLight0)
+            tiles.setWallAt(location, true)
         }
+        tiles.placeOnTile(sprPresent, location)
+        tiles.setTileAt(location, sprites.castle.tilePath5)
     }
     sprite.destroy()
 })
@@ -645,7 +762,6 @@ let tanks: Sprite[] = []
 let mySprite: Sprite = null
 let sprSentinel: Sprite = null
 let sprPresent: Sprite = null
-let randomPresent = 0
 let randomLocation: tiles.Location = null
 let wallLocationLIist: tiles.Location[] = []
 let sprExplosion: Sprite = null
